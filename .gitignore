@@ -221,6 +221,7 @@ pip-log.txt
 *.bbl
 *.blg
 *.log
+*.pdf # don't bother saving individual PDFs, they'll get overwritten too quickly
 
 
 # Vim Stuff
