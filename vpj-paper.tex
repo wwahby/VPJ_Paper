@@ -57,7 +57,7 @@
 %% can use linebreaks \\ within to get better formatting as desired
 \title{\changed{Investigation of Power, Signal, and Thermal Performance of 2D and 3DICs Using a Novel Virtual Integration Platform}}
 \author{William~Wahby,~\IEEEmembership{Student~Member,~IEEE}, Li~Zheng, Yang~Zhang,~\IEEEmembership{Student~Member,~IEEE}, and Muhannad~Bakir,~\IEEEmembership{Senior~Member,~IEEE}%
-\thanks{Manuscript received July 11, 2015. This work was supported in part by the SRC GRC project 2254.001, and by the SRC Educational Alliance Intel Foundation Fellowship}%
+	\thanks{Original manuscript received July 11, 2015. \changed{Revised manuscript received October ??, 2015.} This work was supported in part by the SRC GRC project 2254.001, and by the SRC Educational Alliance Intel Foundation Fellowship}%
 \thanks{William Wahby, Li Zheng, Yang Zhang, and Muhannad Bakir are with the School of Electrical and Computer Engineering, Georgia Institute of Technology, Atlanta, GA, 30332 USA. (emails: wwahby3@gatech.edu; lizheng@gatech.edu; steven.zhang@gatech.edu; muhannad.bakir@mirc.gatech.edu)}}
 
 
@@ -522,7 +522,9 @@ power quality, it also sets up a tradeoff between utilizing die area for logic, 
 In order to explore this tradeoff, the 32nm Sandy Bridge test case was simulated in several 2D and 3D configurations with
 varying amounts of silicon area allocated for chip- or interposer-level 
 decoupling capacitors. The power TSV diameter is assumed to be 10 ${\mu}m$ and the thickness of each die in the 3D stack is assumed to be
-10 ${\mu}m$. 
+10 ${\mu}m$ \changed{to investigate the potential of extreme die thinning. While processing and assembling thinned wafers can be challenging,
+alternate integration schemes in which wafers are bonded and subsequently thinned could enable the stacking of such thin layers
+without the need for modified wafer handling processes \cite{patti-three-dimensional-2006}}.
 As can be seen in \cref{f-sb-psn-decap-10um}, increasing the decoupling
 capacitance can significantly reduce the number of pads or TSVs required for power delivery.
 Small area allocations can likely be achieved
