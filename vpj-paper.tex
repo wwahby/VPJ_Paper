@@ -329,21 +329,21 @@ also reduces the need for power-hungry repeaters.
 	%\begin{tabular}{|c|c|c|c|c|c|}
 	\caption{Comparison to actual data }
 	\begin{threeparttable}
-	\begin{tabular}{cccccc}
+	\begin{tabular}{cccccl}
 		\hline
-							&			&	\multicolumn{2}{c}{Wiring Tiers}					&				&	Predicted \\
-		Processor			&	Node	&	Actual					&	Predicted				&	TDP (W)		&	Power (W) \\
+		&			&	\multicolumn{2}{c}{Wiring Tiers}					&	TDP			&	\multicolumn{1}{c}{Predicted} \\
+		Processor			&	Node	&	Actual					&	Predicted				&	(W)		&	\multicolumn{1}{c}{Power (W)} \\
 		\hline \hline
-		Core 2 Duo E6850 	&	65nm	&	8						&	8						&	65			&	60.27	\\
-		Core 2 Duo E8600 	&	45nm	&	9\tnote{2}				&	8						&	65			&	63.62	\\
-		Core i7 880			&	45nm	&	9\tnote{2}				&	7						&	95			&	105.56		\\
-		Core i7 680\tnote1 	&	32nm	&	9\tnote{2}				&	6						&	73			&	52.74	\\
-		Core i7 2700k		&	32nm	&	9\tnote{2} 				&	8						&	95			&	91.80		\\
+		E6850 	&	65nm	&	8						&	8						&	65			&	60.27 \changed{(-7.3\%)}	\\
+		E8600 	&	45nm	&	9\tnote{2}				&	8						&	65			&	63.62 \changed{(-2.1\%)}	\\
+		i7 880			&	45nm	&	9\tnote{2}				&	7						&	95			&	105.56 \changed{(11.1\%)}		\\
+		i7 680\tnote1 	&	32nm	&	9\tnote{2}				&	6						&	73			&	52.74 \changed{(-27.8\%)}	\\
+		i7 2700k		&	32nm	&	9\tnote{2} 				&	8						&	95			&	91.80 \changed{(-3.3\%)}		\\
 		\hline
 	\end{tabular}
 	\begin{tablenotes}
-		\item[1] Combined MCM package including 32nm CPU die and 45nm gpu/support die
-		\item[2] Includes one global metal layer for power distribution, not modeled here
+		\item[1] Multi-chip package with 32nm CPU die and 45nm gpu/support die.
+		\item[2] Includes one global metal layer for power distribution; not modeled.
 	\end{tablenotes}
 	\end{threeparttable}
 	\label{t-validation}	
