@@ -156,6 +156,41 @@ power supply noise, and number of metal layers required for routing are consider
 \end{enumerate}
 
 The overall execution flow is shown in \cref{f-vp-flowchart}.
+\changed{The user first inputs some high-level information describing the desired design, including the desired clock frequency,
+estimated logic activity factor (the fraction of transistors switching on any given clock cycle), transistor size and expected
+leakage parameters, wiring material resistivity (and size effect parameters), expected die area and thickness.
+For 3D designs, the user must also specify the desired TSV diameter and aspect ratio, as well as the number of tiers
+used to implement the 3DIC.
+In addition to these parameters, the user must also specify the Rent constant, $k$, and Rent exponent, $p$,
+two parameters which describe the degree of interconnection in the design (described in more detail in \cref{s-interconnect-modeling}).
+These parameters are used to first generate an estimate for the number of TSVs required for signal routing, if the design
+is to be implemented in 3D. The TSV size and number are then used by the interconnect module to estimate the distribution of 
+wire lengths in the system, which is in turn used to determine the number of wiring tiers required for signal routing, 
+the pitch of the wires on each tier, and the size and number of repeaters which must be inserted into long wires to meet
+the desired clock frequency.}
+
+\changed{Once the on-chip interconnect parameters are known, the overall capacitance of the wiring network can be determined,
+which can be used to estimate the on-chip interconnect power consumption. The dynamic and leakage power consumed by transistors
+is also calculated, to determine the overall power requirements for the design. Once the total power consumption is known,
+it is used in conjunction with the TSV resistance and inductance (determined from the TSV geometry and material parameters)
+and the package pin resistance and inductance (input by the user)
+to estimate the simultaneous switching noise in the power delivery network. Additional TSVs (for 3D designs)
+or power/ground pads (for 2D designs) are inserted until the simultaneous switching noise drops below a user-determined target.
+At this point the virtual platform checks that the total area allocated to TSVs does not exceed a user-specified limit; 
+if the demand for TSVs outstrips available area, the virtual platform will reduce the TSV diameter (which may require reducing
+the die thickness, if the user specifies that the TSV aspect ratio is fixed) and rerun the interconnect and power modules with
+the new design parameters.}
+
+\changed{Once the design passes the TSV area check, the thermal module is used to estimate the maximum temperature in the 2D
+or 3D design. In order to do this, the material parameters of the die, wiring tiers (including wires and interlayer
+dielectric), TSVs, and interstitial layers are input into a finite difference thermal simulator, along with a heat transfer
+boundary condition representing the capabilities of the top-mounted heatsink. If the maximum temperature in the stack
+exceeds a user-defined limit, the virtual platform will reduce the clock frequency and rerun the previous modules until
+the maximum temperature is sufficiently reduced. The user can also specify that the logic activity factor be reduced,
+or that the wire or interlayer dielectric materials be modified, as alternate means of power reduction.
+Once the virtual platform determines that the design under consideration satisfies both the TSV area
+constraint and the thermal constraint the final design parameters are reported to the user.}
+
 The 3DIC simulation platform can be used to compare the properties of 2D and 3D chips.
 Currently, the interconnections between logic blocks are not modeled when simulating heterogeneous (SoC-like) 3D stacks,
 which must be taken into account when simulating such systems. In order to better predict the
@@ -173,7 +208,7 @@ a heterogeneous system.
 %% =================================
 %% ========= Interconnects ============
 %% =================================
-\subsection{Interconnect modeling}
+\subsection{Interconnect modeling} \label{s-interconnect-modeling}
 Stochastic wire length distributions have been shown to be effective tools for the rapid prediction
 of interconnect properties in 2D and 3D ICs
 \cite{davis_stochastic_1998,davis_stochastic_1998-1,venkatesan_performance_1999,joyner_impact_2001,sekar_intsim_2007}.
@@ -417,7 +452,6 @@ In order to alleviate electromigration concerns at advanced process nodes, alter
 which may have higher resistivities than pure copper, potentially impacting signal performance, power consumption,
 and the number of metal layers required to fully route a design \cite{adelmann_alternative_2014,sankaran_exploring_2015}. % Removed sankaran_exploring_2014
 It is likely that only the lowest metal levels would utilize alternate wiring materials \cite{oates-electromigration-2015,li-electromigration-2014}. 
-
 
 To investigate the potential impact of electromigration-resistant metals on wire routing,
 a hypothetical 7nm Sandy Bridge CPU test case was constructed by scaling the gate pitch, 
