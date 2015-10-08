@@ -162,9 +162,12 @@ leakage parameters, wiring material resistivity (and size effect parameters), ex
 For 3D designs, the user must also specify the desired TSV diameter and aspect ratio, as well as the number of tiers
 used to implement the 3DIC.
 In addition to these parameters, the user must also specify the Rent constant, $k$, and Rent exponent, $p$,
-two parameters which describe the degree of interconnection in the design (described in more detail in \cref{s-interconnect-modeling}).
-These parameters are used to first generate an estimate for the number of TSVs required for signal routing, if the design
-is to be implemented in 3D. The TSV size and number are then used by the interconnect module to estimate the distribution of 
+which relate the number of terminals leaving a logic block, $T$,
+to the number of logic gates contained within that block, $N$, by the expression $T=kN^p$ \cite{landman_pinblock_1971,christie_interpretation_2000}.
+}
+
+\changed{The Rent relation can be used to determine the number of TSVs required for routing signals within a 3DIC. 
+The TSV size and number are then used by the interconnect module to estimate the distribution of 
 wire lengths in the system, which is in turn used to determine the number of wiring tiers required for signal routing, 
 the pitch of the wires on each tier, and the size and number of repeaters which must be inserted into long wires to meet
 the desired clock frequency.}
