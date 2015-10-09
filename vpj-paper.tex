@@ -162,15 +162,35 @@ leakage parameters, wiring material resistivity (and size effect parameters), ex
 For 3D designs, the user must also specify the desired TSV diameter and aspect ratio, as well as the number of tiers
 used to implement the 3DIC.
 In addition to these parameters, the user must also specify the Rent constant, $k$, and Rent exponent, $p$,
-which relate the number of terminals leaving a logic block, $T$,
-to the number of logic gates contained within that block, $N$, by the expression $T=kN^p$ \cite{landman_pinblock_1971,christie_interpretation_2000}.
-}
+which are described in greater detail in \cref{s-interconnect-modeling}.}
 
-\changed{The Rent relation can be used to determine the number of TSVs required for routing signals within a 3DIC. 
+\begin{figure}[!tb]
+	\centering
+	\includegraphics[width=3.5in]{Figures/vp-flowchart-2.png}
+	\caption{Block diagram of the virtual platform execution flow.}
+	\label{f-vp-flowchart}
+\end{figure}
+
+\changed{The Rent parameters can be used to determine the number of TSVs required for routing signals within a 3DIC. 
 The TSV size and number are then used by the interconnect module to estimate the distribution of 
 wire lengths in the system, which is in turn used to determine the number of wiring tiers required for signal routing, 
 the pitch of the wires on each tier, and the size and number of repeaters which must be inserted into long wires to meet
 the desired clock frequency.}
+
+\changed{
+For the purposes of interconnect modeling, the logic block under consideration is treated as a homogeneous design.
+This assumption allows the rapid calculation of the on-chip interconnect network parameters with a minimum of a priori
+knowledge about the design specifics, at the cost of the loss of insight into the fine-grained details of the design.
+In order to simulate complex heterogeneous designs, the user can input the expected parameters and position of each block
+in the system, and the virtual platform will model the interconnect networks of each block separately, estimate
+the power consumption of each block separately, and then assemble an overall power density map of each tier in the design
+for determination of the thermal profile in the entire stack. When modeling heterogeneous designs, the interconnections
+between each block are ignored, as it is not possible to estimate the inter-block interconnect requirements without
+additional knowledge of the design. Similarly, off-chip interconnects are ignored when simulating both homogeneous
+and heterogeneous designs, as additional design details would be needed for accurate simulation.
+}
+
+
 
 \changed{Once the on-chip interconnect parameters are known, the overall capacitance of the wiring network can be determined,
 which can be used to estimate the on-chip interconnect power consumption. The dynamic and leakage power consumed by transistors
@@ -200,23 +220,23 @@ which must be taken into account when simulating such systems. In order to bette
 performance of 3D SoCs, the method of \cite{zarkesh-ha_pin_1998} can be used to homogenize
 a heterogeneous system.
 
-\begin{figure}[!tb]
-	\centering
-	\includegraphics[width=3.5in]{Figures/vp-flowchart-2.png}
-	\caption{Block diagram of the virtual platform execution flow.}
-	\label{f-vp-flowchart}
-\end{figure}
-
 
 %% =================================
 %% ========= Interconnects ============
 %% =================================
 \subsection{Interconnect modeling} \label{s-interconnect-modeling}
+\changed{The on-chip interconnect network accounts for a significant fraction of the overall
+power consumption in many logic designs \cite{sekar_intsim_2007}; accordingly, accurate determination of
+the parameters of the on-chip interconnect network is crucial for developing reasonable estimates of
+the overall power consumption and operation frequency of an integrated circuit. Specifically,
+the number of metal layers used for wiring must be estimated, as well as the pitch of the wires on each level,
+in order to determine the overall wiring capacitance, which is a key factor in the maximum wire delay and
+interconnect power consumption.}
 Stochastic wire length distributions have been shown to be effective tools for the rapid prediction
-of interconnect properties in 2D and 3D ICs
-\cite{davis_stochastic_1998,davis_stochastic_1998-1,venkatesan_performance_1999,joyner_impact_2001,sekar_intsim_2007}.
- Efforts have been made to extend 2D wire length distributions to 3DICs
-\cite{rahman_wire-length_1999-1,joyner_three-dimensional_2000, kim_through-silicon-via_2009-1},
+of interconnect properties in conventional 2DICs
+\cite{davis_stochastic_1998,davis_stochastic_1998-1,venkatesan_performance_1999,sekar_intsim_2007}.
+Efforts have been made to extend 2D wire length distributions to 3DICs
+\cite{rahman_wire-length_1999-1,joyner_three-dimensional_2000, joyner_impact_2001, kim_through-silicon-via_2009-1},
 but until recently the impact of TSV diameter on the wire length distribution was difficult to capture.
 We recently developed a compact model for the wire length distribution in 3DICs which properly accounts for the
 displacement of logic gates by TSVs \cite{wahby_wld_2013}, which has been integrated into the virtual
@@ -229,7 +249,20 @@ Stochastic wire length distributions determine the number of wires of a particul
 \end{align}
 %
 where $M(l)$ is the number of gate pairs separated by length $l$, and $P_c(l)$ is the probability that
-two gates separated by length $l$ will be connected. The general method of determining $M$ and $P$
+two gates separated by length $l$ will be connected. 
+\changed{$M(l)$ can be calculated relatively straightforwardly by dividing the die area into a grid of potential
+logic gate locations, and simply counting all possible combinations of logic gates separated by a distance $l$.
+The calculation of the connection probability, $P_c(l)$ relies upon Rent's Rule, the observation that
+the number of terminals leaving a logic block, $T$, and the number of logic gates contained within that block, $N$, 
+are related by the power law expression
+\begin{align}
+	T &= kN^p
+\end{align}
+where $k$ is known as the Rent constant, and is roughly related to the average fanout of the logic, 
+and $p$ is known as the Rent exponent, and is related to the degree of interconnectedness of the logic
+\cite{landman_pinblock_1971,christie_interpretation_2000}. Using Rent's rule to calculate $P$ enables estimation
+of the on-chip interconnect network parameters with a minimum of a priori knowledge about the design specifics.}
+The general method of determining $M$ and $P$
 in 2D ICs is laid out in \cite{davis_stochastic_1998}. The method was extended to consider 3DICs in
 \cite{rahman_wire-length_1999-1,joyner_three-dimensional_2000}, but the impact of TSV-induced gate blockage
 was not considered until \cite{kim_through-silicon-via_2009-1} introduced a modified form of $M$ which
