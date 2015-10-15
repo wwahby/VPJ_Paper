@@ -653,53 +653,47 @@ the need to keep the current density carried by each TSV low enough to avoid ele
 
 \subsection{Thermal management} \label{s-3D-thermal}
 Thermal management is a key challenge for 3DICs. In the previous sections it has been shown that transforming a
-2D design into a 3DIC can yield significant reductions in the average wire length and power consumption of the system,
-and the use of ultrathin active layers has been shown to further reduce the power consumption of 3DICs.
-Additionally, low-k dielectrics can be used to decrease the power consumption of the on-chip communication network in
-both 2D and 3D systems.
-
+2D design into a 3DIC can yield significant reductions in the average wire length and power consumption of the system
 While the total power dissipation of an IC is expected to decrease as the device is partitioned into increasing numbers of layers 
 (as shown in \cref{f-sb-power-vs-tiers-ild}),
 that power reduction is not sufficient to keep the areal power density from increasing as tiers are stacked atop one another,
-leading to increased stress on the cooling system, and eventually to unreasonable operating temperatures. Since most
-conventional 2D ICs are already operating at their thermal limits, a system transformed from 2D to 3D must necessarily either
+leading to increased stress on the cooling system, and eventually to unreasonable operating temperatures.
+Since most conventional 2D ICs are already operating at their thermal limits, a system transformed from 2D to 3D must necessarily either
 run at a lower operating frequency, or utilize a more aggressive cooling solution.
 
-In order to quantify these tradeoffs, the performance of a single 32nm Sandy Bridge CPU core is examined in several configurations:
-\begin{enumerate}
-	\item 2D and 3D configurations are investigated to demonstrate the impact of 3D integration on system performance.
-	\item The relative permittivity of the ILD material is swept from 1.0 (vacuum) to 3.9 (silicon dioxide) in order
-			to illustrate the impact of ULK materials on system performance
-	\item Air cooling and microfluidic water cooling are compared in order to demonstrate the benefits of aggressive heat removal techniques.
-			Heat sink parameters are taken from \cite{zhang-micropinfin-heat-sink-2013}
-\end{enumerate}
+
+In order to quantify the thermal impact of 3D stacking, the performance of a single 32nm Sandy Bridge CPU core is examined 
+\changed{in both 2D and 3D configurations. Since 3DICs may require aggressive cooling strategies, the CPU core was simulated
+with both air-cooled and microfluidic heat sinks. In all cases the heat sinks are located on the back side of the top die
+in the stack. The air-cooled heat sink has a heat transfer coefficient of $1.83$ W/cm$^2$K and the microfluidic heat sink
+has a heat transfer coefficient of $4.63$ W/cm$^2$K, as reported in \cite{zhang-micropinfin-heat-sink-2013}.}
+
 The CPU core was simulated in each configuration to find 
 the maximum operating frequency which could be maintained while keeping the maximum temperature below 90$^\circ$C.
-As can be seen in \cref{f-3d-fmax-comparison}, the maximum frequency decreases rapidly as the CPU is folded across
+As can be seen in \cref{f-sb3d-freq-vs-tiers}, the maximum frequency decreases rapidly as the CPU is folded across
 more and more tiers, as the increased power density of the system increases the strain on the cooling system.
-The power consumption each core remains essentially constant for the entire range
-of dielectric constants, as the maximum temperature in the stack is primarily a function of the areal power dissipation
-of the system and the thermal parameters of the heat sink used. The thermally-limited power draw for each configuration 
-is shown in \cref{f-3d-pmax-air-vs-water}.
+Microfluidic cooling can significantly increase the performance of both 2D and 3DICs.
+
+%\begin{figure}[!htbp]
+%	\centering
+%	\includegraphics[width=3.5in]{Figures/sb3d_thermal_response.png}
+%	\caption{
+%		Thermal response of 2D and 3D 32nm Sandy Bridge CPU cores with air-cooled heat sinks.
+%		}
+%	\label{f-sb3d-thermal-response}
+%end{figure}
+
 
 \begin{figure}[!htbp]
 	\centering
-	\includegraphics[width=3.5in]{Figures/SB3D_max_frequency__aircooled_watercooled__ILD_Sweep_2.png}
+	\includegraphics[width=3.5in]{Figures/sb3d_freq_vs_tiers.png}
 	\caption{
-		Maximum operating frequency the Sandy Bridge processing core can achieve while keeping the maximum junction temperature below 90$^\circ$C.
-		Solid lines correspond to air cooling, and dashed lines correspond to water cooling.
+		Maximum frequency achievable by 2D and 3D a 32nm Sandy Bridge CPU cores limited to 90$^\circ$C under air cooling (blue)
+		and microfluidic cooling (yellow).
 		}
-	\label{f-3d-fmax-comparison}
+	\label{f-sb3d-freq-vs-tiers}
 \end{figure}
 
-\begin{figure}[!htbp]
-	\centering
-	\includegraphics[width=3.5in]{Figures/sb3d_air_vs_water_power_consumption.png}
-	\caption{
-		Maximum power consumption of 2D and 3D Sandy Bridge CPU cores limited to 90$^\circ$C with air cooling (blue) and water cooling (yellow).
-		}
-	\label{f-3d-pmax-air-vs-water}
-\end{figure}
 
 While the water-cooled designs can be run faster than air-cooled designs, they typically sacrifice 
 energy efficiency for performance,
@@ -850,3 +844,4 @@ three from the IEEE International Interconnect Technology Conference.
 
 
 \end{document}
+
