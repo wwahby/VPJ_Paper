@@ -55,7 +55,7 @@
 
 %% paper title
 %% can use linebreaks \\ within to get better formatting as desired
-\title{\changed{Investigation of Power, Signal, and Thermal Performance of 3DICs Using a Virtual Integration Platform}}
+\title{\changed{3DIC Power, Signal, and Thermal Pathfinding Using a Virtual Integration Platform}}
 \author{William~Wahby,~\IEEEmembership{Student~Member,~IEEE}, Li~Zheng, Yang~Zhang,~\IEEEmembership{Student~Member,~IEEE}, and Muhannad~Bakir,~\IEEEmembership{Senior~Member,~IEEE}%
 	\thanks{Original manuscript received July 11, 2015. \changed{Revised manuscript received October ??, 2015.} This work was supported in part by the SRC GRC project 2254.001, and by the SRC Educational Alliance Intel Foundation Fellowship}%
 \thanks{William Wahby, Li Zheng, Yang Zhang, and Muhannad Bakir are with the School of Electrical and Computer Engineering, Georgia Institute of Technology, Atlanta, GA, 30332 USA. (emails: wwahby3@gatech.edu; lizheng@gatech.edu; steven.zhang@gatech.edu; muhannad.bakir@mirc.gatech.edu)}}
@@ -146,7 +146,8 @@ Specifically, the impacts of interlayer dielectric material, wire material, and 
 power supply noise, and number of metal layers required for routing are considered.
 
 \section{Virtual Design Platform} \label{s-virtual-platform}
- The virtual platform consists of the following:
+\changed{The virtual platform source code is available online at http://www.ece.gatech.edu/research/labs/i3ds/}.
+The virtual platform consists of the following:
  \begin{enumerate}
 	\item 3D wire length distribution which properly accounts for TSV area
 	\item Metal layer pitch determination algorithms capable of handling alternate wiring materials
@@ -164,7 +165,7 @@ used to implement the 3DIC.
 In addition to these parameters, the user must also specify the Rent constant, $k$, and Rent exponent, $p$,
 which are described in greater detail in \cref{s-interconnect-modeling}.}
 
-\begin{figure}[!tb]
+\begin{figure}[tb]
 	\centering
 	\includegraphics[width=3.5in]{Figures/vp-flowchart-2.png}
 	\caption{Block diagram of the virtual platform execution flow.}
@@ -189,8 +190,6 @@ between each block are ignored, as it is not possible to estimate the inter-bloc
 additional knowledge of the design. Similarly, off-chip interconnects are ignored when simulating both homogeneous
 and heterogeneous designs, as additional design details would be needed for accurate simulation.
 }
-
-
 
 \changed{Once the on-chip interconnect parameters are known, the overall capacitance of the wiring network can be determined,
 which can be used to estimate the on-chip interconnect power consumption. The dynamic and leakage power consumed by transistors
@@ -338,11 +337,7 @@ along the corresponding axis. $P$ is the total power consumption in the volume o
 \cref{f-thermal-fdm}. A similar scheme can be derived for grid points along the boundary of the mesh. In the case that
 one mesh has multiple materials, we assign the volume-weighted thermal conductivity of the surrounding volume to that grid point.
 
-The accuracy of this finite difference module was assessed in \cite{zhang-thermal-2014}, in which the performance of the finite difference scheme
-was compared against finite element ANSYS models of the same structure. The finite difference model was found to match the ANSYS results with a maximum
-error of 2.7\%.
-
-\begin{figure}[!htbp]
+\begin{figure}[tb]
 	\centering
 	\includegraphics[width=3.5in]{Figures/thermal_fd_setup.png}
 	\caption{
@@ -351,6 +346,28 @@ error of 2.7\%.
 	\label{f-thermal-fdm}
 \end{figure}
 
+\begin{figure}[tb]
+	\centering
+	\includegraphics[width=2.0in]{Figures/thermal_config_no_bc_2.png}
+	\caption{
+		\changed{The geometry used in the virtual platform thermal module. TSVs are individually meshed, in order to better capture the impact
+		of 3D heat transport.}
+	}
+	\label{f-thermal-config}
+\end{figure}
+
+\changed{The thermal configuration considered in the virtual platform is shown in \cref{f-thermal-config}. One or more dice are assumed
+to be stacked vertically atop an interposer (which may be either a conventional organic package substrate, or a silicon or glass
+interposer). Each die is separated into three regions: 1) the bulk silicon, 2) the BEOL, which is an effective material composed of the
+volume-weighted average of the thermal conductivities of the wiring material and the interlayer dielectric, and 3) the underfill material
+between each die. The power dissipated by each die is applied as an excitation at the boundary between the bulk silicon and the BEOL. 
+TSVs are modeled within the bulk of any dice below the top die in the stack. Each external boundary of the stack is
+modeled with a convective boundary condition; boundaries "internal" to the package are typically given a low heat transfer coefficient
+of $5$ W/m$^2$K, whereas the top and bottom surfaces are given higher values to reflect the particular cooling method under consideration.}
+
+\changed{The accuracy of this finite difference module was assessed in \cite{zhang-thermal-2014},} in which the performance of the finite difference scheme
+was compared against finite element ANSYS models of the same structure. The finite difference model was found to match the ANSYS results with a maximum
+error of 2.7\%.
 
 
 
@@ -375,7 +392,7 @@ of each block are then fed into the thermal module, which determines the maximum
 The virtual platform can accurately predict
 the wire pitch in each routing tier, as shown in \cref{f-sb-wire-pitch}.}
 
-\begin{figure}[!tb]
+\begin{figure}[tb]
 	\centering
 	\includegraphics[width=3.5in]{Figures/sb_wire_pitch_2.png}
 	\caption{
@@ -461,7 +478,7 @@ While ULK dielectrics may provide one avenue towards reduced power consumption, 
 the wiring stack is challenging, and poses significant reliability concerns. Alternate approaches to
 reducing wire power consumption will be examined in \cref{s-3d-investigations}.
 
-\begin{figure}[!htbp]
+\begin{figure}[tb]
 	\centering
 	\includegraphics[width=3.5in]{Figures/sb_metal_layers_ild_eps_sweep_2.png}
 	\caption{
@@ -470,7 +487,7 @@ reducing wire power consumption will be examined in \cref{s-3d-investigations}.
 	\label{f-2d-materials-num-levels-ild}
 \end{figure}
 
-\begin{figure}[!htbp]
+\begin{figure}[tb]
 	\centering
 	\includegraphics[width=3.5in]{Figures/total_power_sb2d_ild_permittivity_sweep_3.png}
 	\caption{
@@ -518,7 +535,7 @@ to minimize the cannibalization of active area, but we have relaxed that limit h
 In order to examine the impacts of 3D integration, a single CPU core from a 32nm Sandy Bridge Core i7 2700k
 is used as a test case throughout this section.
 
-\begin{figure}[!t]
+\begin{figure}[tb]
 	\centering
 	\includegraphics[width=3.5in]{Figures/sb2d_32nm_vs_7nm_alt_metal_comparison.png}
 	\caption{
@@ -541,7 +558,7 @@ in \cref{s-3D-thermal}. It is important to note that 3DICs reduce the power requ
 improving the overall
 energy efficiency of the system, as can be seen in \cref{f-sb-comm-power-fraction}.
 
-\begin{figure}[!htbp]
+\begin{figure}[tb]
 	\centering
 	\includegraphics[width=3.5in]{Figures/sb3d_power_and_pdens2.png}
 	\caption{Impact of block folding on power consumption and power density of a single 32nm Sandy Bridge core.}
@@ -564,19 +581,21 @@ The impact of die thickness on 3DIC power consumption is examined in \cref{f-sb-
 In order to realize the greatest possible power reduction from 3D integration, the active layers should be
 as thin as possible, to minimize the distance that signals must travel when they are routed between tiers.
 
-\begin{figure}[!htbp]
+\begin{figure}[tb]
 	\centering
 	\includegraphics[width=3.5in]{Figures/sb3d_comm_power_fraction_4.png}
 	\caption{Fraction of power consumed for on-chip communication as a function of 3D configuration and operating frequency.}
 	\label{f-sb-comm-power-fraction}
 \end{figure}
 
-\begin{figure}[!htbp]
+\begin{figure}[tb]
 	\centering
 	\includegraphics[width=3.5in]{Figures/sb3d-comm-power-vs-thickness_3.png}
 	\caption{Impact of die thickness on power consumed by wires and repeaters in a single 32nm Sandy Bridge core implemented in 3D.}
 	\label{f-sb-wire-power-thickness}
 \end{figure}
+
+
 
 \subsection{Power Delivery}
 In order for an IC to function reliably,
@@ -612,6 +631,17 @@ as it has an outsized impact on the power consumption of the on-chip communicati
 of the 3DIC logic tiers is not a limiting factor for 2-tier designs, but 4- and 8-tier designs can realize nearly as much benefit
 from extreme die thinning as from the use of ultralow-k dielectrics.
 
+\begin{figure}[tb]
+	\centering
+	\includegraphics[width=3.5in]{Figures/sb3d_psn_vs_ild_and_tiers_vacuum_vs_sio2_3.png}
+	\caption{
+		Impact of interlayer dielectric material, substrate thickness, and degree of 3D 
+		integration on power delivery TSV requirements in a hypothetical 3D Sandy Bridge CPU core.
+		In the single-tier (2D) case the required number of power pads is displayed.
+	}
+	\label{f-3d-psn-ild-tiers}
+\end{figure}
+
 Another method to reduce the power supply noise is to integrate decoupling capacitors onto the die, interposer, or package
 in order to compensate for the inductance of the power delivery network. While this practice can improve
 power quality, it also sets up a tradeoff between utilizing die area for logic, decoupling capacitors, and power delivery.
@@ -630,18 +660,7 @@ into a 2D or 3D system will likely require the use of either a dedicated capacit
 decoupling capacitors. Even with the use of decoupling capacitors, a lower bound on power TSV number is set by
 the need to keep the current density carried by each TSV low enough to avoid electromigration effects.
 
-\begin{figure}[!htbp]
-	\centering
-	\includegraphics[width=3.5in]{Figures/sb3d_psn_vs_ild_and_tiers_vacuum_vs_sio2_3.png}
-	\caption{
-		Impact of interlayer dielectric material, substrate thickness, and degree of 3D 
-		integration on power delivery TSV requirements in a hypothetical 3D Sandy Bridge CPU core.
-		In the single-tier (2D) case the required number of power pads is displayed.
-	}
-	\label{f-3d-psn-ild-tiers}
-\end{figure}
-
-\begin{figure}[!htbp]
+\begin{figure}[tb]
 	\centering
 	\includegraphics[width=3.5in]{Figures/sb3d_psn_tiers_and_decap__substrate_10um__tsvs_10um_3.png}
 	\caption{
@@ -650,6 +669,9 @@ the need to keep the current density carried by each TSV low enough to avoid ele
 		}
 	\label{f-sb-psn-decap-10um}
 \end{figure}
+
+
+
 
 \subsection{Thermal management} \label{s-3D-thermal}
 Thermal management is a key challenge for 3DICs. In the previous sections it has been shown that transforming a
@@ -661,18 +683,69 @@ leading to increased stress on the cooling system, and eventually to unreasonabl
 Since most conventional 2D ICs are already operating at their thermal limits, a system transformed from 2D to 3D must necessarily either
 run at a lower operating frequency, or utilize a more aggressive cooling solution.
 
-
 In order to quantify the thermal impact of 3D stacking, the performance of a single 32nm Sandy Bridge CPU core is examined 
 \changed{in both 2D and 3D configurations. Since 3DICs may require aggressive cooling strategies, the CPU core was simulated
 with both air-cooled and microfluidic heat sinks. In all cases the heat sinks are located on the back side of the top die
 in the stack. The air-cooled heat sink has a heat transfer coefficient of $1.83$ W/cm$^2$K and the microfluidic heat sink
-has a heat transfer coefficient of $4.63$ W/cm$^2$K, as reported in \cite{zhang-micropinfin-heat-sink-2013}.}
+has a heat transfer coefficient of $4.63$ W/cm$^2$K, as reported in \cite{zhang-micropinfin-heat-sink-2013}. Boundaries internal
+to the package are assigned a heat transfer coefficient of $0.005$ W/cm$^2$K. The
+thermal conductivities used for the materials in the stack are presented in \cref{t-thermal-materials}.}
+
+\begin{table}[tb]
+	\centering
+	\caption{Material parameters used for thermal simulation}
+	\begin{tabular}{cccccl}
+		\hline
+%						&	Thermal \\
+		Material		 & Thermal Cond. (W/mK) \\
+		\hline
+		\hline
+		Silicon			&	149 \\
+		Copper			&	400 \\
+		Underfill		&	0.9 \\
+		Silicon Dioxide	&	1.38 \\
+		\hline
+	\end{tabular}
+	\label{t-thermal-materials}	
+\end{table}
 
 The CPU core was simulated in each configuration to find 
 the maximum operating frequency which could be maintained while keeping the maximum temperature below 90$^\circ$C.
-As can be seen in \cref{f-sb3d-freq-vs-tiers}, the maximum frequency decreases rapidly as the CPU is folded across
+\changed{In order to focus on solely the thermal aspects of 3D stacking we assumed that the system was thermally-limited, and ignored other
+factors which could limit the maximum operating frequency of the chip, such as clock distribution. Additionally,
+the power consumed by the cooling solution is ignored in both cases, in order to isolate intrinsic die-level
+effects from the details of the particular heat sink used.}
+As can be seen in \cref{f-sb3d-freq-vs-tiers}, the maximum frequency decreases steadily as the CPU is folded across
 more and more tiers, as the increased power density of the system increases the strain on the cooling system.
-Microfluidic cooling can significantly increase the performance of both 2D and 3DICs.
+
+\begin{figure}[tb]
+	\centering
+	\includegraphics[width=3.5in]{Figures/sb3d_freq_vs_tiers.png}
+	\caption{
+		Maximum frequency achievable by 2D and 3D 32nm Sandy Bridge CPU cores limited to 90$^\circ$C under air cooling (blue)
+		and microfluidic cooling (yellow).
+		}
+	\label{f-sb3d-freq-vs-tiers}
+\end{figure}
+
+\begin{figure}[tb]
+	\centering
+	\includegraphics[width=3.5in]{Figures/sb3d_air_vs_water_epc.png}
+	\caption{
+		Core-level energy consumption per clock cycle for 2D and 3D Sandy Bridge CPU cores limited to 90$^\circ$C with air-cooled and microfluidic heat sinks.
+		The power consumed by the cooling solution is not included in this comparison.
+		}
+	\label{f-3d-epc-air-vs-water}
+\end{figure}
+
+While the water-cooled designs can be run faster than air-cooled designs, they typically \changed{incur a slight reduction
+in energy efficiency,}
+as shown in \cref{f-3d-epc-air-vs-water}.
+\changed{In all cases the 3D cores exhibit energy efficiency savings and performance increases over the 2D implementations.
+The cores using microfluidic coolers exhibit slightly lower energy efficiencies than their air-cooled counterparts
+since they were designed to take advantage of their greater thermal headroom by operating at higher frequencies.
+which ultimately requires a greater overall fraction of die power to be used for on-chip communication, as previously shown in
+\cref{f-sb-comm-power-fraction}}
 
 %\begin{figure}[!htbp]
 %	\centering
@@ -682,35 +755,6 @@ Microfluidic cooling can significantly increase the performance of both 2D and 3
 %		}
 %	\label{f-sb3d-thermal-response}
 %end{figure}
-
-
-\begin{figure}[!htbp]
-	\centering
-	\includegraphics[width=3.5in]{Figures/sb3d_freq_vs_tiers.png}
-	\caption{
-		Maximum frequency achievable by 2D and 3D a 32nm Sandy Bridge CPU cores limited to 90$^\circ$C under air cooling (blue)
-		and microfluidic cooling (yellow).
-		}
-	\label{f-sb3d-freq-vs-tiers}
-\end{figure}
-
-
-While the water-cooled designs can be run faster than air-cooled designs, they typically sacrifice 
-energy efficiency for performance,
-as shown in \cref{f-3d-epc-air-vs-water}. Water-cooled CPU cores folded over four or more tiers, however, are projected
-to exhibit equal or better EPC as their air-cooled counterparts, due to the combination of the significant communication power savings
-benefit from 3D integration and the performance enhancement afforded by effective heat removal from the 3D stack. 
-In all cases, reducing the dielectric constant of the ILD material can significantly decrease the power consumption of 
-the CPU core, yielding a significant performance benefit for thermally-limited systems.
-
-\begin{figure}[!htbp]
-	\centering
-	\includegraphics[width=3.5in]{Figures/sb3d_air_vs_water_energy_per_cycle.png}
-	\caption{
-		Energy consumption per clock cycle for 2D and 3D Sandy Bridge CPU cores limited to 90$^\circ$C with air-cooled (solid lines) and water-cooled (dashed lines) heat sinks.
-		}
-	\label{f-3d-epc-air-vs-water}
-\end{figure}
 
 
 %% =================================
@@ -727,6 +771,7 @@ low-k dielectrics, and 3D integration on the performance, power consumption,
 and power delivery requirements of a 32nm processing core were examined, and a hypothetical 7nm version of the same processor
 was simulated to determine the impact of alternate wire materials on the number of metal levels required for signal routing
 at advanced process nodes.
+
 
 
 
@@ -754,6 +799,8 @@ as well as the SRC Educational Alliance Intel Foundation Fellowship.
 % Start the bibliography!
 \bibliography{references}
 
+\vspace{-0.3in}
+
 \begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{Figures/bio-will.png}}]%
 {William Wahby}
 (S13) received the B.S. and M.S. degrees in electrical and computer engineering from the
@@ -769,7 +816,7 @@ performance modeling, monolithic 3D integration, chip-scale optical interconnect
 and novel memory devices.
 \end{IEEEbiography}
 
-%\vspace{-0.3in}
+\vspace{-0.3in}
 
 \begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{Figures/bio-li.png}}]%
 {Li Zheng}
@@ -788,7 +835,7 @@ silicon interposer, and 3-D integrated systems.
 \end{IEEEbiography}
 
 
-%\vspace{-0.3in}
+\vspace{-0.3in}
 
 
 \begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{Figures/bio-yang.png}}]%
@@ -801,11 +848,7 @@ with the Georgia Institute of Technology, Atlanta,
 GA, USA.
 \end{IEEEbiography}
 
-
-
-
-%\vfill
-%\newpage
+\vspace{-0.3in}
 
 
 \begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{Figures/bio-muhannad.png}}]%
@@ -840,7 +883,7 @@ three from the IEEE International Interconnect Technology Conference.
 
 
 
-%\vfill
+\vfill
 
 
 \end{document}
