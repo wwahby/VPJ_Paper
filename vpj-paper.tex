@@ -55,7 +55,7 @@
 
 %% paper title
 %% can use linebreaks \\ within to get better formatting as desired
-\title{\changed{3DIC Power, Signal, and Thermal Pathfinding Using a Virtual Integration Platform}}
+\title{\changed{Compact Modeling of Trends in 3DIC Power, Signal, and Thermal Performance}}
 \author{William~Wahby,~\IEEEmembership{Student~Member,~IEEE}, Li~Zheng, Yang~Zhang,~\IEEEmembership{Student~Member,~IEEE}, and Muhannad~Bakir,~\IEEEmembership{Senior~Member,~IEEE}%
 	\thanks{Original manuscript received July 11, 2015. \changed{Revised manuscript received October ??, 2015.} This work was supported in part by the SRC GRC project 2254.001, and by the SRC Educational Alliance Intel Foundation Fellowship}%
 \thanks{William Wahby, Li Zheng, Yang Zhang, and Muhannad Bakir are with the School of Electrical and Computer Engineering, Georgia Institute of Technology, Atlanta, GA, 30332 USA. (emails: wwahby3@gatech.edu; lizheng@gatech.edu; steven.zhang@gatech.edu; muhannad.bakir@mirc.gatech.edu)}}
@@ -142,16 +142,16 @@ and other more conventional technological improvements.
 
 \changed{This paper first presents the specifics of the models used, and then segues into validation and predictions.}
 In \cref{s-virtual-platform} the details of the models used and their interactions are presented.
-\changed{In \cref{s-validation} the predictions of the virtual platform are validated against published
+\changed{In \cref{s-validation} the simulation framework is benchmarked against published
 wirelength and TDP data for several commercial processors.}
-The virtual platform is used to investigate the impacts of advanced
+The simulation tool is used to investigate the impacts of advanced
 technologies and integration methodologies on a 32nm Sandy Bridge i7 processing core in \cref{s-2d-investigations,s-3d-investigations}.
 Specifically, the impacts of interlayer dielectric material, wire material, and 2D vs 3D integration on the power consumption,
 power supply noise, and number of metal layers required for routing are considered.
 
-\section{Virtual Design Platform} \label{s-virtual-platform}
-\changed{The virtual platform source code is available online at http://www.ece.gatech.edu/research/labs/i3ds/}.
-The virtual platform consists of the following:
+\section{Simulation Framework} \label{s-virtual-platform}
+\changed{The source code for the integrated simulation framework is available online at www.ece.gatech.edu/research/labs/i3ds}.
+The simulation platform consists of the following:
  \begin{enumerate}
 	\item 3D wire length distribution which properly accounts for TSV area
 	\item Metal layer pitch determination algorithms capable of handling alternate wiring materials
@@ -172,7 +172,7 @@ which are described in greater detail in \cref{s-interconnect-modeling}.}
 \begin{figure}[tb]
 	\centering
 	\includegraphics[width=3.5in]{Figures/vp-flowchart-3.png}
-	\caption{Block diagram of the virtual platform execution flow.}
+	\caption{Block diagram of the simulation platform execution flow.}
 	\label{f-vp-flowchart}
 \end{figure}
 
@@ -187,8 +187,7 @@ For the purposes of interconnect modeling, the logic block under consideration i
 This assumption allows the rapid calculation of the on-chip interconnect network parameters with a minimum of a priori
 knowledge about the design specifics, at the cost of the loss of insight into the fine-grained details of the design.
 In order to simulate complex heterogeneous designs, the user can input the expected parameters and position of each block
-in the system, and the virtual platform will model the interconnect networks of each block separately, estimate
-the power consumption of each block separately, and then assemble an overall power density map of each tier in the design
+in the system. In this case, the interconnect networks and power consumption of each block are modeled separately, and then assemble an overall power density map of each tier in the design
 for determination of the thermal profile in the entire stack. When modeling heterogeneous designs, the interconnections
 between each block are ignored, as it is not possible to estimate the inter-block interconnect requirements without
 additional knowledge of the specific design under consideration.
@@ -219,9 +218,8 @@ Once the virtual platform determines that the design under consideration satisfi
 constraint and the thermal constraint the final design parameters are reported to the user.}
 
 The 3DIC simulation platform can be used to compare the properties of 2D and 3D chips.
-Currently, the interconnections between logic blocks are not modeled when simulating heterogeneous (SoC-like) 3D stacks,
-which must be taken into account when simulating such systems. In order to better predict the
-performance of 3D SoCs, the method of \cite{zarkesh-ha_pin_1998} can be used to homogenize
+Currently, the interconnections between logic blocks are not modeled when simulating heterogeneous 3D stacks. In order to better predict the
+performance of such systems, the method of \cite{zarkesh-ha_pin_1998} can be used to homogenize
 a heterogeneous system.
 
 
@@ -705,7 +703,7 @@ thermal conductivities used for the materials in the stack are presented in \cre
 		\hline
 		Silicon			&	149 \\
 		Copper			&	400 \\
-		Underfill		&	0.9 \\
+		Underfill		&	0.3 \\
 		Silicon Dioxide	&	1.38 \\
 		\hline
 	\end{tabular}
@@ -719,45 +717,18 @@ factors which could limit the maximum operating frequency of the chip, such as c
 the power consumed by the cooling solution is ignored in both cases, in order to isolate intrinsic die-level
 effects from the details of the particular heat sink used.}
 As can be seen in \cref{f-sb3d-freq-vs-tiers}, the maximum frequency decreases steadily as the CPU is folded across
-more and more tiers, as the increased power density of the system increases the strain on the cooling system.
+more and more tiers, as the increased power density (\cref{f-sb-power-vs-tiers-ild}) of the 3D 
+system increases the strain on the cooling system. 
 
 \begin{figure}[tb]
 	\centering
-	\includegraphics[width=3.5in]{Figures/sb3d_freq_vs_tiers.png}
+	\includegraphics[width=3.5in]{Figures/SB3D_max_frequency__air_vs_water_cooling.png}
 	\caption{
 		Maximum frequency achievable by 2D and 3D 32nm Sandy Bridge CPU cores limited to 90$^\circ$C under air cooling (blue)
-		and microfluidic cooling (yellow).
+		and microfluidic cooling (red).
 		}
 	\label{f-sb3d-freq-vs-tiers}
 \end{figure}
-
-\begin{figure}[tb]
-	\centering
-	\includegraphics[width=3.5in]{Figures/sb3d_air_vs_water_epc.png}
-	\caption{
-		Core-level energy consumption per clock cycle for 2D and 3D Sandy Bridge CPU cores limited to 90$^\circ$C with air-cooled and microfluidic heat sinks.
-		The power consumed by the cooling solution is not included in this comparison.
-		}
-	\label{f-3d-epc-air-vs-water}
-\end{figure}
-
-While the water-cooled designs can be run faster than air-cooled designs, they typically \changed{incur a slight reduction
-in energy efficiency,}
-as shown in \cref{f-3d-epc-air-vs-water}.
-\changed{In all cases the 3D cores exhibit energy efficiency savings and performance increases over the 2D implementations.
-The cores using microfluidic coolers exhibit slightly lower energy efficiencies than their air-cooled counterparts
-since they were designed to take advantage of their greater thermal headroom by operating at higher frequencies.
-which ultimately requires a greater overall fraction of die power to be used for on-chip communication, as previously shown in
-\cref{f-sb-comm-power-fraction}}
-
-%\begin{figure}[!htbp]
-%	\centering
-%	\includegraphics[width=3.5in]{Figures/sb3d_thermal_response.png}
-%	\caption{
-%		Thermal response of 2D and 3D 32nm Sandy Bridge CPU cores with air-cooled heat sinks.
-%		}
-%	\label{f-sb3d-thermal-response}
-%end{figure}
 
 
 %% =================================
@@ -769,14 +740,15 @@ A virtual integration platform for 2D and 3D IC pathfinding was developed and us
 advanced technologies on system performance. The virtual platform incorporates 
 models for signal delivery, power supply noise, and thermal performance in 2D and 3D ICs,
 and was validated against wire pitch and power consumption data for recent commercial microprocessors.
-The impacts of 
-low-k dielectrics, and 3D integration on the performance, power consumption,
+The impacts of low-k dielectrics, and 3D integration on the performance, power consumption,
 and power delivery requirements of a 32nm processing core were examined, and a hypothetical 7nm version of the same processor
 was simulated to determine the impact of alternate wire materials on the number of metal levels required for signal routing
-at advanced process nodes.
-
-
-
+at advanced process nodes. \changed{The results suggest that 3D implementations of 2D systems should exhibit greater energy efficiency
+than their 2D counterparts, though high performance 3D logic cores will require more aggressive cooling solutions to achieve
+performance parity. Highly-stacked high performance 3DICs were shown to require very large numbers of TSVs for power delivery,
+due in part to the increased parasitic TSV resistance and inductance introduced into the power delivery network, as well as the
+increased power density of the 3D cores. The use of highly-thinned dice as well as low-k interlayer dielectrics were shown to
+be an effective methods for reducing the overall power consumption of high performance 3DICs.}
 
 
 
