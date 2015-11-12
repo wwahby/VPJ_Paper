@@ -165,7 +165,7 @@ which are described in greater detail in \cref{s-interconnect-modeling}.}
 
 \begin{figure}[tb]
 	\centering
-	\includegraphics[width=3.0in]{Figures/vp-flowchart-3.png}
+	\includegraphics[width=2.75in]{Figures/vp-flowchart-3.png}
 	\caption{Block diagram of the simulation platform execution flow.}
 	\label{f-vp-flowchart}
 \end{figure}
@@ -224,53 +224,22 @@ power consumption in many logic designs \cite{sekar_intsim_2007}; accordingly, a
 the parameters of the on-chip interconnect network is crucial for developing reasonable estimates of
 the overall power consumption and operation frequency of an integrated circuit. Specifically,
 the number of metal layers used for wiring must be estimated, as well as the pitch of the wires on each level,
-in order to determine the overall wiring capacitance, which is a key factor in the maximum wire delay and
-interconnect power consumption.}
-Stochastic wire length distributions have been shown to be effective tools for the rapid prediction
+in order to determine the overall wiring capacitance, which is a key factor in the maximum wire delay and power consumption.}
+
+Stochastic wire length models have been shown to be effective tools for the rapid prediction
 of interconnect properties in conventional 2DICs
 \cite{davis_stochastic_1998,davis_stochastic_1998-1,venkatesan_performance_1999,sekar_intsim_2007}.
-Efforts have been made to extend 2D wire length distributions to 3DICs
-\cite{rahman_wire-length_1999-1,joyner_three-dimensional_2000, joyner_impact_2001, kim_through-silicon-via_2009-1},
-but until recently the impact of TSV diameter on the wire length distribution was difficult to capture.
-We recently developed a compact model for the wire length distribution in 3DICs which properly accounts for the
-displacement of logic gates by TSVs \cite{wahby_wld_2013}, which has been integrated into the virtual
-platform.
+The method was extended to consider 3DICs in 
+\cite{rahman_wire-length_1999-1,joyner_three-dimensional_2000, joyner_impact_2001},
+but the impact of TSV-induced gate-blockage was not considered until \cite{kim_through-silicon-via_2009-1}
+introduced a correction to account for finite TSV size. The method of \cite{kim_through-silicon-via_2009-1}
+requires brute-force calculation, however, which is too computationally intensive for rapid simulation. 
+To address this issue, a compact correction to the 
+wire length distribution was introduced in \cite{wahby_wld_2013}, which is used in this work to
+estimate the distribution of wire lengths in 2D and 3D ICs.
 
-Stochastic wire length distributions determine the number of wires of a particular length as $I_{idf}(l) = M(l)P_c(l)$,
-where $M(l)$ is the number of gate pairs separated by length $l$, and $P_c(l)$ is the probability that
-two gates separated by length $l$ will be connected. 
-\changed{$M(l)$ can be calculated by dividing the die area into a grid of potential
-logic gate locations, and simply counting all possible combinations of logic gates separated by a distance $l$.
-The calculation of the connection probability, $P_c(l)$ relies upon Rent's Rule, the observation that
-the number of terminals leaving a logic block, $T$, and the number of logic gates contained within that block, $N$, 
-are related by the power law expression $T = kN^p$,
-where $k$ is known as the Rent constant, and is roughly related to the average fanout of the logic, 
-and $p$ is known as the Rent exponent, and is related to the degree of interconnectedness of the logic
-\cite{landman_pinblock_1971,christie_interpretation_2000}. Using Rent's rule to calculate $P$ enables estimation
-of the on-chip interconnect network parameters with a minimum of a priori knowledge about the design specifics.}
-The general method of determining $M$ and $P$
-in 2D ICs is laid out in \cite{davis_stochastic_1998}. The method was extended to consider 3DICs in
-\cite{rahman_wire-length_1999-1,joyner_three-dimensional_2000}, but the impact of TSV-induced gate blockage
-was not considered until \cite{kim_through-silicon-via_2009-1} introduced a modified form of $M$ which
-accounted for logic displacement, but required brute-force calculation of the correction terms.
-This work uses expressions for $M$ and $P$ from \cite{joyner_three-dimensional_2000} with a compact 
-correction to $M$ to account for TSV-induced gate displacement \cite{wahby_wld_2013}.
-
-For a symmetric square chip, with a periodic square array of TSVs, the corrected gate pair function is \cite{wahby_wld_2013}:
-%
-\begin{align}
-	M^*_{t}(l) &\cong M_t^o(l,N_s) - 2g \ast g  + N_{tsv}M_t^0(l,N = w_{tsv}^2) \label{eq-mt-corr}
-\end{align}
-%
-where $M_t^o$ is the 2D gate pair separation function described in \cite{joyner_three-dimensional_2000}, $g$ is the 1D inverse
-cumulative distribution of {\em potentially} forbidden gate locations \cite{wahby_wld_2013}, $N_{tsv}$ is the
-number of TSVs in the logic tier of interest, $N_s$ is the number of logic gates on the tier of interest, $w_{tsv}$ is the
-TSV width, and $l$ is the grid distance between two gates.
-
-By substituting \cref{eq-mt-corr} for the 2D gate placement function in \cite{joyner_three-dimensional_2000}, the impact of TSV-induced
-logic displacement can be modeled.
-The wire pitch and number of metal layers are determined using a bottom-up wire scaling 
-technique \cite{venkatesan_performance_1999}, and an optimal repeater insertion scheme 
+Once the wire length distribution is known, the wire pitch and number of metal layers are determined using a bottom-up wire scaling 
+technique \cite{venkatesan_performance_1999}, and a delay-optimal repeater insertion scheme 
 is used to determine the size and number of repeaters required to meet timing constraints \cite{bakoglu_optimal_1985}.
 
 
@@ -326,7 +295,7 @@ one mesh has multiple materials, we assign the volume-weighted thermal conductiv
 
 \begin{figure}[tb]
 	\centering
-	\includegraphics[width=3.0in]{Figures/thermal_fd_setup.png}
+	\includegraphics[width=2.75in]{Figures/thermal_fd_setup.png}
 	\caption{
 		Finite difference scheme. $(a)$ Points inside the stack. $(b)$ Boundary points at the face of the stack \cite{xie_electrical-thermal_2011}.
 	}
@@ -335,7 +304,7 @@ one mesh has multiple materials, we assign the volume-weighted thermal conductiv
 
 \begin{figure}[tb]
 	\centering
-	\includegraphics[width=2.0in]{Figures/thermal_config_no_bc_4.png}
+	\includegraphics[width=1.75in]{Figures/thermal_config_no_bc_4.png}
 	\caption{
 		\changed{The geometry used in the virtual platform thermal module. TSVs are individually meshed, in order to better capture the impact
 		of 3D heat transport.}
@@ -345,7 +314,7 @@ one mesh has multiple materials, we assign the volume-weighted thermal conductiv
 
 \changed{The thermal configuration considered in the virtual platform is shown in \cref{f-thermal-config}. One or more dice are assumed
 to be stacked vertically atop an interposer (which may be either a conventional organic package substrate, or a silicon or glass
-interposer). Each die is separated into three regions: 1) the bulk silicon, 2) the BEOL, which is an effective material composed of the
+interposer). Each die is separated into three regions: 1) the bulk silicon, 2) the BEOL, which is modeled as an effective material composed of the
 volume-weighted average of the thermal conductivities of the wiring material and the interlayer dielectric, and 3) the underfill material
 between each die. The power dissipated by each die is applied as an excitation at the boundary between the bulk silicon and the BEOL. 
 TSVs are modeled within the bulk of any dice below the top die in the stack. Each external boundary of the stack is
@@ -681,7 +650,6 @@ in the stack. The air-cooled heat sink has a heat transfer coefficient of $1.83$
 has a heat transfer coefficient of $4.63$ W/cm$^2$K, as reported in \cite{zhang-micropinfin-heat-sink-2013}. Boundaries internal
 to the package are assigned a heat transfer coefficient of $0.005$ W/cm$^2$K. The
 thermal conductivities used for the materials in the stack are presented in \cref{t-thermal-materials}.}
-
 \begin{table}[tb]
 	\centering
 	\caption{Material parameters used for thermal simulation}
@@ -694,6 +662,7 @@ thermal conductivities used for the materials in the stack are presented in \cre
 		Silicon			&	149 \\
 		Copper			&	400 \\
 		Underfill		&	0.3 \\
+		Microbumps		&	60	\\
 		Silicon Dioxide	&	1.38 \\
 		\hline
 	\end{tabular}
