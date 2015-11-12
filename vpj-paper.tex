@@ -40,6 +40,7 @@
 
 \usepackage{xcolor} % Use this for different colors -- useful for indicating what's changed since last review round
 \newcommand{\changed}[1]{\textcolor{red}{#1}}
+%\renewcommand{\changed}[1]{#1} %Uncomment this to get rid of the red stuff
 
 %% correct bad hyphenation here
 \hyphenation{op-tical net-works semi-conduc-tor}
@@ -55,7 +56,7 @@
 
 %% paper title
 %% can use linebreaks \\ within to get better formatting as desired
-\title{\changed{Compact Modeling of Trends in 3DIC Power, Signal, and Thermal Performance}}
+\title{\changed{Compact Modeling of Trends in 2D and 3DIC Power, Signal, and Thermal Performance}}
 \author{William~Wahby,~\IEEEmembership{Student~Member,~IEEE}, Li~Zheng, Yang~Zhang,~\IEEEmembership{Student~Member,~IEEE}, and Muhannad~Bakir,~\IEEEmembership{Senior~Member,~IEEE}%
 	\thanks{Original manuscript received July 11, 2015. \changed{Revised manuscript received October ??, 2015.} This work was supported in part by the SRC GRC project 2254.001, and by the SRC Educational Alliance Intel Foundation Fellowship}%
 \thanks{William Wahby, Li Zheng, Yang Zhang, and Muhannad Bakir are with the School of Electrical and Computer Engineering, Georgia Institute of Technology, Atlanta, GA, 30332 USA. (emails: wwahby3@gatech.edu; lizheng@gatech.edu; steven.zhang@gatech.edu; muhannad.bakir@mirc.gatech.edu)}}
@@ -72,12 +73,12 @@
 %% ========== ABSTRACT =============
 %% =================================
 \begin{abstract}
-In order to compare the costs and benefits of 2D and 3DIC technologies, an integrated virtual platform for 3DIC system evaluation and
-design space exploration is developed. The virtual platform is implemented in MATLAB, and is composed of several
+In order to compare the costs and benefits of 2D and 3DIC technologies, an compact simulation framework for 3DIC system evaluation and
+design space exploration is developed. The simulator is implemented in MATLAB, and is composed of several
 simulation modules, including a compact 3DIC wire length distribution,
 a wire pitch and repeater insertion module, a 2D and 3DIC power supply noise
 estimation module, and a finite difference thermal simulator.
-The virtual platform is validated against published data for several commercial 2D processors at the 65nm, 45nm, and 32nm nodes.
+The simulator is validated against published data for several commercial 2D processors at the 65nm, 45nm, and 32nm nodes.
 In order to quantify the benefits of both 2D and 3D integration approaches, a 32nm CPU core is modeled and the impact of several
 technology parameters, including interlayer dielectric (ILD) material, on-chip wire material, die thickness, 
 and cooling solution are explored. 3D integration is shown to provide a significant power reduction for the 32nm test case,
@@ -117,28 +118,21 @@ Alternate wiring materials are also being considered to improve the RC delay of 
 as well as to reduce the risk of electromigration failures. Fluidic cooling can be used to mitigate the thermal challenges
 in high performance 3DICs. In order to understand the 3D design space, and to decide when a 3D system
 might have advantages over a 2D system, all of these factors must be modeled simultaneously.
-\changed{Performing these coupled simulations with high fidelity is computationally intensive, rendering
+\changed{Performing these coupled simulations with high fidelity is computationally intensive, however, rendering
 thorough exploration of the 3DIC design space challenging.}
 
-In order to better understand the tradeoffs inherent in 3DIC design, we present an integrated virtual platform for 3DIC evaluation
-to enable rapid exploration of the 3DIC design space. \changed{The aim of this work is the creation of a compact simulation tool enabling
+In order to investigate the tradeoffs inherent in 3DIC design, we present a compact simulation platform for
+rapid exploration of the 3DIC design space. \changed{The aim of this work is the creation of a compact simulation tool enabling
 the rapid investigation of what-if questions, in order to understand the trends in performance and power consumption
 as materials, devices, and integration methodologies are changed. The compact modeling platform presented here can
-then be used to guide more precise investigations into the detailed physical design of 3DICs in the appropriate regimes.}
+then be used to guide more precise investigations into the details of 3DIC physical design.}
 
-The virtual platform consists of several simulation
-modules specially tailored for 3DICs, described in \cref{s-virtual-platform}, which have been interconnected to simultaneously explore the 
-signal, power, and thermal behavior of a 3D or 2D system. In order to understand the impact of 3D design on
-signaling, a novel compact stochastic wire length model has been developed, which accounts for the TSV-induced
-displacement of logic gates in a 3DIC \cite{wahby_wld_2013}. Simple models for wire pitch determination
-and repeater insertion are used to develop a complete picture of the on-chip signaling network \cite{venkatesan_performance_1999,bakoglu_optimal_1985}.
-The 3DIC power delivery network is also modeled to determine the maximum simultaneous switching noise in the system,
-and to understand how many TSVs must be used for power delivery. A multiscale finite difference thermal module
-is also included, which rapidly and accurately determines the thermal profile of each layer in a 3D stack.
-All of the models can be applied equally well to 2D ICs, allowing for direct comparison of the costs and benefits of 3D integration
+The simulation platform consists of several simulation
+modules specially tailored for 3DICs, described in \cref{s-virtual-platform}.
+\changed{The details of the on-chip wires, TSVs, power delivery network, and steady-state thermal profile
+are all modeled in order to develop a complete picture of the overall 3D system performance.}
+The simulation platform can also be applied to 2D ICs, allowing for direct comparison of 3D integration
 and other more conventional technological improvements.
-
-
 
 \changed{This paper first presents the specifics of the models used, and then segues into validation and predictions.}
 In \cref{s-virtual-platform} the details of the models used and their interactions are presented.
@@ -153,7 +147,7 @@ power supply noise, and number of metal layers required for routing are consider
 \changed{The source code for the integrated simulation framework is available online at www.ece.gatech.edu/research/labs/i3ds}.
 The simulation platform consists of the following:
  \begin{enumerate}
-	\item 3D wire length distribution which properly accounts for TSV area
+	\item 3D wire length distribution which accounts for TSV area
 	\item Metal layer pitch determination algorithms capable of handling alternate wiring materials
 	\item An optimal repeater insertion scheme
 	\item Power supply noise models which account for power delivery in 3DICs
@@ -161,34 +155,38 @@ The simulation platform consists of the following:
 \end{enumerate}
 
 The overall execution flow is shown in \cref{f-vp-flowchart}.
-\changed{The user first inputs some high-level information describing the desired design, including the desired clock frequency,
-estimated logic activity factor (the fraction of transistors switching on any given clock cycle), transistor size and expected
-leakage parameters, wiring material resistivity (and size effect parameters), expected die area and thickness.
+\changed{The user first inputs high-level design parameters, including the target clock frequency,
+estimated logic activity factor (the fraction of transistors switching on any given clock cycle), transistor size and
+leakage parameters, wiring material resistivity and size effect parameters, and expected die area and thickness.
 For 3D designs, the user must also specify the desired TSV diameter and aspect ratio, as well as the number of tiers
 used to implement the 3DIC.
-In addition to these parameters, the user must also specify the Rent constant, $k$, and Rent exponent, $p$,
+The user must also specify the Rent constant, $k$, and Rent exponent, $p$,
 which are described in greater detail in \cref{s-interconnect-modeling}.}
 
 \begin{figure}[tb]
 	\centering
-	\includegraphics[width=3.5in]{Figures/vp-flowchart-3.png}
+	\includegraphics[width=3.0in]{Figures/vp-flowchart-3.png}
 	\caption{Block diagram of the simulation platform execution flow.}
 	\label{f-vp-flowchart}
 \end{figure}
 
-\changed{The Rent parameters can be used to determine the number of TSVs required for routing signals within a 3DIC. 
+\changed{The Rent parameters are used to determine the number of TSVs required for routing signals within a 3DIC. 
 The TSV size and number are then used by the interconnect module to estimate the distribution of 
 wire lengths in the system, which is in turn used to determine the number of wiring tiers required for signal routing, 
-the pitch of the wires on each tier, and the size and number of repeaters which must be inserted into long wires to meet
-the desired clock frequency.}
+the wire pitch on each tier, and the size and number of repeaters which must be inserted into long wires to meet
+the target clock frequency.}
 
 \changed{
-For the purposes of interconnect modeling, the logic block under consideration is treated as a homogeneous design.
-This assumption allows the rapid calculation of the on-chip interconnect network parameters with a minimum of a priori
-knowledge about the design specifics, at the cost of the loss of insight into the fine-grained details of the design.
+For the purposes of on-chip interconnect modeling, the logic block under consideration is treated as a homogeneous design.
+This assumption is commonly used with stochastic wirelength models and allows the rapid estimation of the on-chip 
+wire parameters without a priori knowledge about the design specifics, at the cost of the 
+loss of insight into the fine-grained details of the design \cite{davis_stochastic_1998,joyner_impact_2001,sekar_intsim_2007}.
 In order to simulate complex heterogeneous designs, the user can input the expected parameters and position of each block
-in the system. In this case, the interconnect networks and power consumption of each block are modeled separately, and then assemble an overall power density map of each tier in the design
-for determination of the thermal profile in the entire stack. When modeling heterogeneous designs, the interconnections
+in the system. In this case each block is modeled separately, 
+and the results are assembled into an overall power density map of each tier in the design
+to determine the thermal profile throughout the stack. In order to better predict the
+performance of such systems, the method of \cite{zarkesh-ha_pin_1998} can be used to homogenize
+a heterogeneous system. When modeling heterogeneous designs, the interconnections
 between each block are ignored, as it is not possible to estimate the inter-block interconnect requirements without
 additional knowledge of the specific design under consideration.
 Similarly, off-chip interconnects are ignored when simulating both homogeneous
@@ -198,29 +196,23 @@ and heterogeneous designs, as additional design details would be needed for accu
 \changed{Once the on-chip interconnect parameters are known, the overall capacitance of the wiring network can be determined,
 which can be used to estimate the on-chip interconnect power consumption. The dynamic and leakage power consumed by transistors
 is also calculated, to determine the overall power requirements for the design. Once the total power consumption is known,
-it is used in conjunction with the TSV resistance and inductance (determined from the TSV geometry and material parameters)
-and the package pin resistance and inductance (input by the user)
+it is used in conjunction with the TSV resistance and inductance
+and the package pin resistance and inductance
 to estimate the simultaneous switching noise in the power delivery network. Additional TSVs (for 3D designs)
-or power/ground pads (for 2D designs) are inserted until the simultaneous switching noise drops below a user-determined target.
-At this point the virtual platform checks that the total area allocated to TSVs does not exceed a user-specified limit; 
-if the demand for TSVs outstrips available area, the virtual platform will reduce the TSV diameter (which may require reducing
-the die thickness, if the user specifies that the TSV aspect ratio is fixed) and rerun the interconnect and power modules with
+or power/ground pads (for 2D designs) are inserted until the simultaneous switching noise drops to acceptable levels.
+At this point the tool checks that the total area allocated to TSVs does not exceed a user-specified limit; 
+if the demand for TSVs outstrips available area, the TSV diameter is reduced and the interconnect and power modules are rerun with
 the new design parameters.}
 
 \changed{Once the design passes the TSV area check, the thermal module is used to estimate the maximum temperature in the 2D
 or 3D design. In order to do this, the material parameters of the die, wiring tiers (including wires and interlayer
 dielectric), TSVs, and interstitial layers are input into a finite difference thermal simulator, along with a heat transfer
-boundary condition representing the capabilities of the top-mounted heatsink. If the maximum temperature in the stack
-exceeds a user-defined limit, the virtual platform will reduce the clock frequency and rerun the previous modules until
+boundary condition representing the heatsink. If the maximum temperature in the stack
+exceeds a user-defined limit, the clock frequency is reduced and the previous modules are rerun until
 the maximum temperature is sufficiently reduced. The user can also specify that the logic activity factor be reduced,
 or that the wire or interlayer dielectric materials be modified, as alternate means of power reduction.
-Once the virtual platform determines that the design under consideration satisfies both the TSV area
+Once the design under consideration satisfies both the TSV area
 constraint and the thermal constraint the final design parameters are reported to the user.}
-
-The 3DIC simulation platform can be used to compare the properties of 2D and 3D chips.
-Currently, the interconnections between logic blocks are not modeled when simulating heterogeneous 3D stacks. In order to better predict the
-performance of such systems, the method of \cite{zarkesh-ha_pin_1998} can be used to homogenize
-a heterogeneous system.
 
 
 %% =================================
@@ -244,15 +236,10 @@ We recently developed a compact model for the wire length distribution in 3DICs 
 displacement of logic gates by TSVs \cite{wahby_wld_2013}, which has been integrated into the virtual
 platform.
 
-Stochastic wire length distributions determine the number of wires of a particular length as
-%
-\begin{align}
-	I_{idf}(l) &= M(l)P_c(l) \label{eq-iidf}
-\end{align}
-%
+Stochastic wire length distributions determine the number of wires of a particular length as $I_{idf}(l) = M(l)P_c(l)$,
 where $M(l)$ is the number of gate pairs separated by length $l$, and $P_c(l)$ is the probability that
 two gates separated by length $l$ will be connected. 
-\changed{$M(l)$ can be calculated relatively straightforwardly by dividing the die area into a grid of potential
+\changed{$M(l)$ can be calculated by dividing the die area into a grid of potential
 logic gate locations, and simply counting all possible combinations of logic gates separated by a distance $l$.
 The calculation of the connection probability, $P_c(l)$ relies upon Rent's Rule, the observation that
 the number of terminals leaving a logic block, $T$, and the number of logic gates contained within that block, $N$, 
@@ -339,7 +326,7 @@ one mesh has multiple materials, we assign the volume-weighted thermal conductiv
 
 \begin{figure}[tb]
 	\centering
-	\includegraphics[width=3.5in]{Figures/thermal_fd_setup.png}
+	\includegraphics[width=3.0in]{Figures/thermal_fd_setup.png}
 	\caption{
 		Finite difference scheme. $(a)$ Points inside the stack. $(b)$ Boundary points at the face of the stack \cite{xie_electrical-thermal_2011}.
 	}
@@ -348,7 +335,7 @@ one mesh has multiple materials, we assign the volume-weighted thermal conductiv
 
 \begin{figure}[tb]
 	\centering
-	\includegraphics[width=2.0in]{Figures/thermal_config_no_bc_3.png}
+	\includegraphics[width=2.0in]{Figures/thermal_config_no_bc_4.png}
 	\caption{
 		\changed{The geometry used in the virtual platform thermal module. TSVs are individually meshed, in order to better capture the impact
 		of 3D heat transport.}
@@ -362,8 +349,8 @@ interposer). Each die is separated into three regions: 1) the bulk silicon, 2) t
 volume-weighted average of the thermal conductivities of the wiring material and the interlayer dielectric, and 3) the underfill material
 between each die. The power dissipated by each die is applied as an excitation at the boundary between the bulk silicon and the BEOL. 
 TSVs are modeled within the bulk of any dice below the top die in the stack. Each external boundary of the stack is
-modeled with a convective boundary condition; boundaries "internal" to the package are typically given a low heat transfer coefficient
-of $5$ W/m$^2$K, whereas the top and bottom surfaces are given higher values to reflect the particular cooling method under consideration.}
+modeled with a convective boundary condition; boundaries internal to the package are typically given a low heat transfer coefficient
+of $5$ mW/m$^2$K, whereas the top and bottom surfaces are given higher values to reflect the particular cooling method under consideration.}
 
 \changed{The accuracy of this finite difference module was assessed in \cite{zhang-thermal-2014},} in which the performance of the finite difference scheme
 was compared against finite element ANSYS models of the same structure. The finite difference model was found to match the ANSYS results with a maximum
@@ -441,23 +428,25 @@ published data for these processors. The 45nm and 32nm test cases all have a tot
 the wires on the top layer are sized very large and used for power and clock delivery, rather than signal routing.
 The simulator is significantly underestimating both the number of wiring tiers
 and the overall power consumption for the Core i7 680 test case; this error could be due to the fact that the
-Core i7 680 is the only design under consideration which was implemented as a multi-chip module (MCM), with a CPU die (fabricated
-on a 32nm process) integrated with a GPU die (fabricated on a 45nm process) in the same package.
-Overall, this level of accuracy is sufficient for the investigation of power and performance trends in 2D and 3DICs.}
+Core i7 680 is the only design under consideration which was implemented as a multi-chip module (MCM), with a 32nm CPU die 
+integrated with a 45nm GPU die in the same package.}
 
 \changed{When simulating heterogeneous
 systems, the virtual platform currently lacks the ability to estimate the power required for inter-block communication. While this
 lack will affect the power estimates for all test cases, it is likely that the power required for communication between the two
 separate dice in the Core i7 680 package is much larger than the power requirements for communication between GPU and logic cores
-integrated on the same die (e.g. in the Sandy Bridge Core i7 2700k).}
+integrated on the same die.}
 
 \changed{While the worst-case error in these benchmarks is relatively high ($27.8\%$), the value of this simulation framework lies
-in its ability to consider many different effects very rapidly ( a single design scenario can be evaluated in 1-5
+in its ability to consider many different effects very rapidly (a single design scenario can be evaluated in several
 seconds on a consumer-grade desktop or laptop computer), enabling detailed investigation of the relative performance
-of different technologies on a particular design. In the subsequent sections the virtual platform is used in this manner
-to investigate the impacts of material, technology, and packaging innovations on overall design quality.}
+of different technologies on a particular design. Overall, this level of accuracy is sufficient for the investigation
+of power and performance trends in 2D and 3DICs.
+In the subsequent sections the virtual platform is used in this manner
+to investigate the impacts of material, technology, and packaging innovations on the power consumption
+and performance of 2D and 3DICs.}
 
-\section{2D: Seeking improvements via materials innovation} \label{s-2d-investigations}
+\section{2D: Impact of materials innovation} \label{s-2d-investigations}
 One path towards increasing system performance is to achieve improvements in the wiring materials.
 The permittivity of the interlayer dielectric (ILD) material has a strong effect on the parasitic
 capacitance of the on-chip wires,
@@ -652,7 +641,8 @@ varying amounts of silicon area allocated for chip- or interposer-level
 decoupling capacitors. The power TSV diameter is assumed to be 10 ${\mu}m$ and the thickness of each die in the 3D stack is assumed to be
 10 ${\mu}m$ \changed{to investigate the potential of extreme die thinning. While processing and assembling thinned wafers can be challenging,
 alternate integration schemes in which wafers are bonded and subsequently thinned could enable the stacking of such thin layers
-without the need for modified wafer handling processes \cite{patti-three-dimensional-2006}}.
+without the need for modified wafer handling processes \cite{patti-three-dimensional-2006}}. Alternately, monolithic 3DIC fabrication
+techniques could enable designs with extremely small intertier distances \cite{vinet-monolithic-2014}.
 As can be seen in \cref{f-sb-psn-decap-10um}, increasing the decoupling
 capacitance can significantly reduce the number of pads or TSVs required for power delivery.
 Small area allocations can likely be achieved
@@ -718,7 +708,11 @@ the power consumed by the cooling solution is ignored in both cases, in order to
 effects from the details of the particular heat sink used.}
 As can be seen in \cref{f-sb3d-freq-vs-tiers}, the maximum frequency decreases steadily as the CPU is folded across
 more and more tiers, as the increased power density (\cref{f-sb-power-vs-tiers-ild}) of the 3D 
-system increases the strain on the cooling system. 
+system increases the strain on the cooling system.
+\changed{In all cases, the microfluidically-cooled cores run faster than their air-cooled counterparts. In \cref{f-sb3d-epc-vs-tiers} the energy efficiency of the 32nm
+Sandy Bridge CPU core is shown. Both the air-cooled and microfluidically-cooled 3D designs are more energy efficient than the 2D designs.
+These results suggest that an aggressively-cooled high performance 3D logic core could simultaneously achieve higher performance and energy
+efficiency than a conventional air-cooled 2DIC.}
 
 \begin{figure}[tb]
 	\centering
@@ -728,6 +722,15 @@ system increases the strain on the cooling system.
 		and microfluidic cooling (red).
 		}
 	\label{f-sb3d-freq-vs-tiers}
+\end{figure}
+
+\begin{figure}[tb]
+	\centering
+	\includegraphics[width=3.5in]{Figures/sb3d_air_vs_water_epc_2.png}
+	\caption{
+		Energy consumed per clock cycle for 2D and 3D 32nm Sandy Bridge CPU cores under air cooling (blue) and microfluidic cooling (red).
+		}
+	\label{f-sb3d-epc-vs-tiers}
 \end{figure}
 
 
