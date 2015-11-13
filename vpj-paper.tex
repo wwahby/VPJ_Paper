@@ -160,7 +160,7 @@ estimated logic activity factor (the fraction of transistors switching on any gi
 leakage parameters, wiring material resistivity and size effect parameters, and expected die area and thickness.
 For 3D designs, the user must also specify the desired TSV diameter and aspect ratio, as well as the number of tiers
 used to implement the 3DIC.
-The user must also specify the Rent constant, $k$, and Rent exponent, $p$,
+The user must also specify the Rent parameters,
 which are described in greater detail in \cref{s-interconnect-modeling}.}
 
 
@@ -244,14 +244,8 @@ Once the wire length distribution is known, the wire pitch and number of metal l
 technique \cite{venkatesan_performance_1999}, and a delay-optimal repeater insertion scheme 
 is used to determine the size and number of repeaters required to meet timing constraints \cite{bakoglu_optimal_1985}.
 
-
-
-\subsection{Material considerations}
-As interconnect dimensions continue to scale, the properties of wiring materials have begun to diverge from their bulk values.
-Surface scattering and grain boundary scattering greatly enhance the resistivity of nanoscale copper wires \cite{sun_surface_2010}.
-In order to capture the impact of these effects on wire resistivity, 
-we use a combined Mayadas-Shatzke and Fuchs-Sondheimer (MS+FS) model 
-\cite{sun_surface_2010,mayadas_electrical-resistivity_1970,fuchs_conductivity_1938,sondheimer_mean_1952}, with
+The impact of surface scattering and grain boundary scattering on wire resistivity are incorporated into the wire sizing algorithm
+with a combined Mayadas-Shatzke and Fuchs-Sondheimer (MS+FS) model, with
 specularity of $0.55$ and backscattering probability of $0.43$ \cite{sun_surface_2010}.
 In all cases, the grain size is approximated as the smallest dimension of the wire under consideration.
 
@@ -263,8 +257,8 @@ In all cases, the grain size is approximated as the smallest dimension of the wi
 \subsection{Power supply noise modeling}
 Power supply noise must be suppressed to ensure reliable system operation, but power delivery in 3DICs is 
 complicated by the limited area available for routing power interconnects between tiers.
-We use the 3DIC power supply network models developed in \cite{zheng_novel_2014,huang_power_2012}
-to determine the maximum power supply noise in the 3D stack and the number of TSVs required for power delivery.
+We use the 3DIC power supply network models developed in \cite{zheng_novel_2014}
+to determine the power supply noise in the 3D stack and the number of power delivery TSVs.
 
 %% =================================
 %% ========= THERMAL ============
@@ -274,8 +268,8 @@ Thermal issues are one of the greatest challenges in 3DIC design.
 In order to design a thermally robust 3D system, the relationships between device technology, system performance
 area constraints, and packaging materials and technology must be explored.
 To that end, we utilize a fast and accurate finite difference thermal model, \changed{described in \cite{xie_electrical-thermal_2011},
-with a non-conformal meshing strategy described in \cite{zhang-thermal-2014}. In the case that
-one mesh has multiple materials, we assign the volume-weighted thermal conductivity of the surrounding volume to that grid point.}
+with a non-conformal meshing strategy described in \cite{zhang-thermal-2014}. If a mesh has multiple materials, 
+we assign the volume-weighted thermal conductivity of the surrounding volume to that point.}
 
 \begin{figure}[tb]
 	\centering
@@ -368,21 +362,20 @@ can accurately predict the wire pitch in each routing tier, as shown in \cref{f-
 	\label{f-sb-wire-pitch}
 \end{figure}
 
-\changed{The simulator is significantly underestimating both the number of wiring tiers
+\changed{The simulator underestimates both the number of wiring tiers
 and the overall power consumption for the Core i7 680 test case; this error could be due to the fact that the
 Core i7 680 is the only design under consideration which was implemented as a multi-chip module (MCM), with a 32nm CPU die 
 integrated with a 45nm GPU die in the same package.}
 \changed{The simulator currently lacks the ability to estimate the power required for inter-block communication in
 heterogeneous systems. While this
 lack will affect the power estimates for all test cases, it is likely that the power required for communication between the two
-separate dice in the Core i7 680 package is much larger than the power requirements for communication between GPU and logic cores
+separate dice in the Core i7 680 is much larger than the power requirements for communication between GPUs and logic cores
 integrated on the same die.}
 
 
-
 \changed{While the worst-case error in these benchmarks is relatively high ($27.8\%$), the value of this simulation framework lies
-in its ability to consider many different effects very rapidly (a single design scenario can be evaluated in several
-seconds on a consumer-grade desktop or laptop computer), enabling detailed investigation of the relative performance
+in its ability to consider many different effects very rapidly (a design scenario can be evaluated in several
+seconds on a consumer-grade laptop computer), enabling detailed investigation of the relative performance
 of different technologies on a particular design. Overall, this level of accuracy is sufficient for the investigation
 of power and performance trends in 2D and 3DICs.
 In the subsequent sections the virtual platform is used in this manner
@@ -393,22 +386,21 @@ and performance of 2D and 3DICs.}
 One path towards increasing system performance is to achieve improvements in the wiring materials.
 The permittivity of the interlayer dielectric (ILD) material has a strong effect on the parasitic
 capacitance of the on-chip wires,
-which in turn determines the RC delay and power consumption of the wiring network. In addition to
-directly reducing the power required to send signals along the on-chip wires, decreasing the RC delay
-also reduces the need for power-hungry repeaters.
+which in turn impacts the wire RC delay and power consumption. Additionally, decreasing the RC delay
+reduces the need for power-hungry repeaters.
 
-In order to quantify this effect and to determine the potential of ultra low-k ILD materials, 
+In order to investigate the potential of ultra low-k ILD materials, 
 a 32nm Sandy Bridge Core i7 was simulated with a range of different
 ILD permittivities, ranging from 3.9 (Silicon Dioxide), all the way down to 1 (vacuum).
 Figure \ref{f-2d-materials-num-levels-ild} shows that the number of metal layers required to fully route
 the Sandy Bridge processing core can be reduced from 8 to 6 if the relative dielectric constant
 of the ILD material can be brought below 1.3.
-The CPU power consumption scales roughly linearly with
+CPU power consumption scales roughly linearly with
 ILD permittivity, as shown in \cref{f-2d-materials-power-consumption}, and significant power reductions
 are possible with ultra low-k (ULK) materials. The power reduction comes from both a reduction in wire power,
 as well as a reduction in the number and size of the repeaters needed to meet timing constraints.
 While ULK dielectrics may provide one avenue towards reduced power consumption, their manufacture and integration into
-the wiring stack is challenging, and poses significant reliability concerns. Alternate approaches to
+the wiring stack is challenging. Alternate approaches to
 reducing wire power consumption will be examined in \cref{s-3d-investigations}.
 
 \begin{figure}[tb]
@@ -429,17 +421,15 @@ reducing wire power consumption will be examined in \cref{s-3d-investigations}.
 	\label{f-2d-materials-power-consumption}
 \end{figure}
 
-
-The materials used for the wires must be
-resistant to electromigration. As the critical dimensions of the smallest on-chip wires have decreased,
-electromigration has become significant concern for system reliability at advanced process nodes 
+As the critical dimensions of the smallest on-chip wires have decreased,
+electromigration has become a reliability concern at advanced process nodes 
 \cite{michael_electromigration_2003,srivastava_interconnect_2004,tokei_reliability_2010}.
-In order to alleviate electromigration concerns at advanced process nodes, alternate materials may be required,
-which may have higher resistivities than pure copper, potentially impacting signal performance, power consumption,
+In order to address electromigration challenges at advanced process nodes, alternate materials may be required, 
+potentially impacting signal performance, power consumption,
 and the number of metal layers required to fully route a design \cite{adelmann_alternative_2014,sankaran_exploring_2015}. % Removed sankaran_exploring_2014
 It is likely that only the lowest metal levels would utilize alternate wiring materials \cite{oates-electromigration-2015,li-electromigration-2014}. 
 
-To investigate the potential impact of electromigration-resistant metals on wire routing,
+To investigate the potential impact of alternate metals on routing,
 a hypothetical 7nm Sandy Bridge CPU test case was constructed by scaling the gate pitch, 
 minimum wire pitch, transistor size, and all other lengths in the 32nm Sandy Bridge
 by a factor of 4.57X (32/7). Two 7nm test cases were considered: \textit{7nm A}, in which all wires are composed of an
@@ -500,9 +490,7 @@ energy efficiency of the system, as can be seen in \cref{f-sb-comm-power-fractio
 
 In order to fully route a 3DIC, space must be allocated on each tier for TSVs. Since TSVs consume space
 that could otherwise be used for logic, it is desirable to minimize the fraction of chip area 
-consumed by TSVs, to avoid unnecessarily increasing the size of each die. In order to minimize the space
-occupied by TSVs, the TSV aspect ratio can either be increased, directly enabling the use of thinner TSVs,
-or the die itself can be thinned, to enable the use of low aspect ratio TSVs.
+consumed by TSVs. TSV diameter can be reduced by either increasing the TSV aspect ratio or by die thinning.
 Thicker logic tiers are attractive due to their higher mechanical stability, simplifying
 handling and assembly, but they limit the improvement in average wire length achieved by
 moving to 3D, since the distance between tiers is greater. 
@@ -535,17 +523,16 @@ In order for an IC to function reliably,
 the power delivery network must be robust enough to prevent undue fluctuation of the supply voltage \cite{huang_power_2012}.
 Power delivery in 3DICs becomes challenging, as a high performance 3DIC may have a significantly
 higher areal power density than an equivalent 2D chip, while simultaneously having less space available for
-routing power delivery resources. Additionally, in 3DICs power must be delivered to each tier in the stack
+routing power delivery resources. Additionally, power must be delivered to each tier
 through TSVs, introducing additional parasitic resistance and inductance into the wiring network.
 
-The number of power connections to each tier required for stable operation is primarily determined by the maximum power draw and power density 
+The number of power connections required by each tier is determined by the power draw and power density 
 of the system,
-which in turn is strongly dependent upon the interlayer dielectric and the substrate thickness (in 3D configurations).
+which in turn depends upon the dielectric properties and the substrate thickness (in 3D configurations).
 Both 2D and 3D systems benefit from the development of ultralow-k interlayer dielectric materials, and 
 the use of thin substrates in 3D configurations can further reduce the demands on the power supply network.
 
-In order to
-explore these effects, the Sandy Bridge test case was simulated with several substrate thicknesses and interlayer
+In order to explore these effects, the Sandy Bridge test case was simulated with several substrate thicknesses and 
 dielectric permittivities, in order to determine the number of power delivery pads or TSVs needed to reduce
 the simultaneous switching noise to below 15\% of the nominal supply voltage. The results are presented in \cref{f-3d-psn-ild-tiers}.
 For two-tier stacks only a slight increase in power TSVs is observed over the 2D case, but
@@ -566,7 +553,7 @@ from extreme die thinning as from the use of ultralow-k dielectrics.
 	\label{f-3d-psn-ild-tiers}
 \end{figure}
 
-Another method to reduce the power supply noise is to integrate decoupling capacitors onto the die, interposer, or package
+Another method to reduce power supply noise is to integrate decoupling capacitors onto the die, interposer, or package
 in order to compensate for the inductance of the power delivery network. While this practice can improve
 power quality, it also sets up a tradeoff between utilizing die area for logic, decoupling capacitors, and power delivery.
 
@@ -580,9 +567,8 @@ techniques could enable designs with extremely small intertier distances \cite{v
 As can be seen in \cref{f-sb-psn-decap-10um}, increasing the decoupling
 capacitance can significantly reduce the number of pads or TSVs required for power delivery.
 Small area allocations can likely be achieved
-with on-chip decoupling capacitors, but integrating more than several square millimeters of decoupling capacitors
-into a 2D or 3D system will likely require the use of either a dedicated capacitor tier, or interposer-based
-decoupling capacitors. Even with the use of decoupling capacitors, a lower bound on power TSV number is set by
+with on-chip decoupling capacitors, but integrating high decoupling capacitance densities could be challenging. 
+Even with the use of decoupling capacitors, a lower bound on power TSV number is set by
 the need to keep the current density carried by each TSV low enough to avoid electromigration effects.
 
 \begin{figure}[tb]
@@ -600,9 +586,9 @@ the need to keep the current density carried by each TSV low enough to avoid ele
 
 \subsection{Thermal management} \label{s-3D-thermal}
 Thermal management is a key challenge for 3DICs.
-While the total power dissipation of an IC is expected to decrease as the systemis partitioned into increasing numbers of layers 
+While the total power dissipation of an IC is expected to decrease as the system is partitioned into increasing numbers of layers 
 (as shown in \cref{f-sb-power-vs-tiers-ild}),
-that power reduction is not sufficient to keep the areal power density from increasing as tiers are stacked atop one another,
+the areal power density will still increase as tiers are stacked atop one another,
 leading to increased stress on the cooling system.
 
 \begin{table}[tb]
