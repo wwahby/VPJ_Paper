@@ -157,19 +157,13 @@ The simulation platform consists of the following:
 The overall execution flow is shown in \cref{f-vp-flowchart}.
 \changed{The user first inputs high-level design parameters, including the target clock frequency,
 estimated logic activity factor (the fraction of transistors switching on any given clock cycle), transistor size and
-leakage parameters, wiring material resistivity and size effect parameters, and expected die area and thickness.
+leakage parameters, wiring material, and expected die area and thickness.
 For 3D designs, the user must also specify the desired TSV diameter and aspect ratio, as well as the number of tiers
-used to implement the 3DIC.
-The user must also specify the Rent parameters,
-which are described in greater detail in \cref{s-interconnect-modeling}.}
+used to implement the 3DIC.}
 
-
-
-\changed{The Rent parameters are used to determine the number of TSVs required for routing signals within a 3DIC. 
-The TSV size and number are then used by the interconnect module to estimate the distribution of 
+\changed{The interconnect module first estimates the distribution of 
 wire lengths in the system, which is in turn used to determine the number of wiring tiers required for signal routing, 
-the wire pitch on each tier, and the size and number of repeaters which must be inserted into long wires to meet
-the target clock frequency.}
+the wire pitch on each tier, and the number of repeaters needed to meet the delay constraint.}
 
 \changed{
 For the purposes of on-chip interconnect modeling, the logic block under consideration is treated as a homogeneous design.
@@ -181,9 +175,8 @@ in the system. In this case each block is modeled separately,
 and the results are assembled into an overall power density map of each tier in the design
 to determine the thermal profile throughout the stack. In order to better predict the
 performance of such systems, the method of \cite{zarkesh-ha_pin_1998} can be used to homogenize
-a heterogeneous system. When modeling heterogeneous designs, the interconnections
-between each block are ignored, as it is not possible to estimate the inter-block interconnect requirements without
-additional knowledge of the specific design under consideration.
+a heterogeneous system. Inter-block connections in heterogeneous designs are ignored, 
+as additional design-specific information is needed to determine their properties.
 Similarly, off-chip interconnects are ignored when simulating both homogeneous
 and heterogeneous designs, as additional design details would be needed for accurate simulation.
 }
@@ -203,8 +196,7 @@ and the package pin resistance and inductance
 to estimate the simultaneous switching noise in the power delivery network. Additional TSVs (for 3D designs)
 or power/ground pads (for 2D designs) are inserted until the simultaneous switching noise drops to acceptable levels.
 At this point the tool checks that the total area allocated to TSVs does not exceed a user-specified limit; 
-if the demand for TSVs outstrips available area, the TSV diameter is reduced and the interconnect and power modules are rerun with
-the new design parameters.}
+if the demand for TSVs outstrips available area, the TSV diameter is reduced and the interconnect and power modules are rerun.}
 
 \changed{Once the design passes the TSV area check, the thermal module is used to estimate the maximum temperature in the 2D
 or 3D design. In order to do this, the material parameters of the die, wiring tiers (including wires and interlayer
@@ -214,7 +206,7 @@ exceeds a user-defined limit, the clock frequency is reduced and the previous mo
 the maximum temperature is sufficiently reduced. The user can also specify that the logic activity factor be reduced,
 or that the wire or interlayer dielectric materials be modified, as alternate means of power reduction.
 Once the design under consideration satisfies both the TSV area
-constraint and the thermal constraint the final design parameters are reported to the user.}
+constraint and the thermal constraint the final design parameters are reported.}
 
 
 %% =================================
@@ -247,7 +239,7 @@ is used to determine the size and number of repeaters required to meet timing co
 The impact of surface scattering and grain boundary scattering on wire resistivity are incorporated into the wire sizing algorithm
 with a combined Mayadas-Shatzke and Fuchs-Sondheimer (MS+FS) model, with
 specularity of $0.55$ and backscattering probability of $0.43$ \cite{sun_surface_2010}.
-In all cases, the grain size is approximated as the smallest dimension of the wire under consideration.
+The metal grain size is approximated as the smallest dimension of each wire.
 
 
 %% =================================
@@ -288,7 +280,7 @@ volume-weighted average of the thermal conductivities of the wiring material and
 between each die. The power dissipated by each die is applied as an excitation at the boundary between the bulk silicon and the BEOL. 
 TSVs are modeled within the bulk of any dice below the top die in the stack. Each external boundary of the stack is
 modeled with a convective boundary condition; boundaries internal to the package are typically given a low heat transfer coefficient
-of $5$ mW/m$^2$K, whereas the top and bottom surfaces are given higher values to reflect the particular cooling method under consideration.}
+of $5$ mW/m$^2$K, while the top and bottom surfaces are given higher values to reflect the cooling method under consideration.}
 
 \changed{The accuracy of this finite difference module was assessed in \cite{zhang-thermal-2014},} in which the performance of the finite difference scheme
 was compared against finite element ANSYS models of the same structure. The finite difference model was found to match the ANSYS results with a maximum
@@ -456,7 +448,7 @@ Unless otherwise noted, we assume a TSV aspect ratio of 20:1, and require that t
 less than 10\% of the total die area. Typically, 3DIC designs limit the TSV area to 1\% or less
 to minimize the cannibalization of active area, but we have relaxed that limit here for illustrative purposes.
 In order to examine the impacts of 3D integration, a single CPU core from a 32nm Sandy Bridge Core i7 2700k
-is used as a test case throughout this section.
+is examined throughout this section.
 
 \begin{figure}[tb]
 	\centering
@@ -529,7 +521,7 @@ through TSVs, introducing additional parasitic resistance and inductance into th
 The number of power connections required by each tier is determined by the power draw and power density 
 of the system,
 which in turn depends upon the dielectric properties and the substrate thickness (in 3D configurations).
-Both 2D and 3D systems benefit from the development of ultralow-k interlayer dielectric materials, and 
+Both 2D and 3D systems benefit from the development of ULK interlayer dielectric materials, and 
 the use of thin substrates in 3D configurations can further reduce the demands on the power supply network.
 
 In order to explore these effects, the Sandy Bridge test case was simulated with several substrate thicknesses and 
