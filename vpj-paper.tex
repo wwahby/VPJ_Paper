@@ -222,9 +222,9 @@ in order to determine the overall wiring capacitance, which is a key factor in t
 
 Stochastic wire length models have been shown to be effective tools for the rapid prediction
 of interconnect properties in conventional 2DICs
-\cite{davis_stochastic_1998,davis_stochastic_1998-1,venkatesan_performance_1999,sekar_intsim_2007}.
-The method was extended to consider 3DICs in 
-\cite{rahman_wire-length_1999-1,joyner_three-dimensional_2000, joyner_impact_2001},
+\cite{davis_stochastic_1998,davis_stochastic_1998-1,sekar_intsim_2007}.
+The method was extended to 3DICs in 
+\cite{rahman_wire-length_1999-1,joyner_three-dimensional_2000},
 but the impact of TSV-induced gate-blockage was not considered until \cite{kim_through-silicon-via_2009-1}
 introduced a correction to account for finite TSV size. The method of \cite{kim_through-silicon-via_2009-1}
 requires brute-force calculation, however, which is too computationally intensive for rapid simulation. 
@@ -391,9 +391,6 @@ CPU power consumption scales roughly linearly with
 ILD permittivity, as shown in \cref{f-2d-materials-power-consumption}, and significant power reductions
 are possible with ultra low-k (ULK) materials. The power reduction comes from both a reduction in wire power,
 as well as a reduction in the number and size of the repeaters needed to meet timing constraints.
-While ULK dielectrics may provide one avenue towards reduced power consumption, their manufacture and integration into
-the wiring stack is challenging. Alternate approaches to
-reducing wire power consumption will be examined in \cref{s-3d-investigations}.
 
 \begin{figure}[tb]
 	\centering
@@ -415,11 +412,11 @@ reducing wire power consumption will be examined in \cref{s-3d-investigations}.
 
 As the critical dimensions of the smallest on-chip wires have decreased,
 electromigration has become a reliability concern at advanced process nodes 
-\cite{michael_electromigration_2003,srivastava_interconnect_2004,tokei_reliability_2010}.
+\cite{michael_electromigration_2003,tokei_reliability_2010}.
 In order to address electromigration challenges at advanced process nodes, alternate materials may be required, 
 potentially impacting signal performance, power consumption,
-and the number of metal layers required to fully route a design \cite{adelmann_alternative_2014,sankaran_exploring_2015}. % Removed sankaran_exploring_2014
-It is likely that only the lowest metal levels would utilize alternate wiring materials \cite{oates-electromigration-2015,li-electromigration-2014}. 
+and the number of metal layers required to fully route a design \cite{adelmann_alternative_2014}. % Removed sankaran_exploring_2014
+It is likely that only the lowest metal levels would utilize alternate wiring materials \cite{oates-electromigration-2015}. 
 
 To investigate the potential impact of alternate metals on routing,
 a hypothetical 7nm Sandy Bridge CPU test case was constructed by scaling the gate pitch, 
@@ -483,12 +480,9 @@ energy efficiency of the system, as can be seen in \cref{f-sb-comm-power-fractio
 In order to fully route a 3DIC, space must be allocated on each tier for TSVs. Since TSVs consume space
 that could otherwise be used for logic, it is desirable to minimize the fraction of chip area 
 consumed by TSVs. TSV diameter can be reduced by either increasing the TSV aspect ratio or by die thinning.
-Thicker logic tiers are attractive due to their higher mechanical stability, simplifying
-handling and assembly, but they limit the improvement in average wire length achieved by
-moving to 3D, since the distance between tiers is greater. 
-TSVs are typically limited to diameters of 5-10${\mu}m$ and aspect ratios between 5-15:1 
-\cite{ko_wafer-level_2012,lau_evolution_2011,dukovic_through-silicon-via_2010}, with some demonstrations of 20:1 or higher 
-\cite{dembla_high_2012,fischer_very_2012,zhang_within-tier_2013}.
+Thicker logic tiers are attractive due to their higher mechanical stability, but they reduce the wire length advantages of 3DICs. 
+TSVs are typically limited to diameters of 5-10${\mu}m$ and aspect ratios between 5-20:1 
+\cite{lau_evolution_2011,zhang_within-tier_2013}.
 
 The impact of die thickness on 3DIC power consumption is examined in \cref{f-sb-wire-power-thickness}.
 In order to realize the greatest possible power reduction from 3D integration, the active layers should be
@@ -511,9 +505,7 @@ as thin as possible, to minimize the distance that signals must travel when they
 
 
 \subsection{Power Delivery}
-In order for an IC to function reliably,
-the power delivery network must be robust enough to prevent undue fluctuation of the supply voltage \cite{huang_power_2012}.
-Power delivery in 3DICs becomes challenging, as a high performance 3DIC may have a significantly
+Power delivery in 3DICs is challenging, as a high performance 3DIC may have a significantly
 higher areal power density than an equivalent 2D chip, while simultaneously having less space available for
 routing power delivery resources. Additionally, power must be delivered to each tier
 through TSVs, introducing additional parasitic resistance and inductance into the wiring network.
@@ -606,7 +598,7 @@ leading to increased stress on the cooling system.
 	\centering
 	\includegraphics[width=3.5in]{Figures/SB3D_max_frequency__air_vs_water_cooling.png}
 	\caption{
-		Maximum frequency achievable by 2D and 3D 32nm Sandy Bridge CPU cores limited to 90$^\circ$C under air cooling (blue)
+		Maximum clock frequency of 2D and 3D 32nm Sandy Bridge CPU cores limited to 90$^\circ$C under air cooling (blue)
 		and microfluidic cooling (red).
 		}
 	\label{f-sb3d-freq-vs-tiers}
@@ -632,9 +624,9 @@ effects from the details of the particular heat sink used.}
 
 
 As can be seen in \cref{f-sb3d-freq-vs-tiers}, the maximum frequency decreases steadily as the CPU is folded across
-more and more tiers, as the increased power density (\cref{f-sb-power-vs-tiers-ild}) of the 3D 
+more tiers, as the increased power density (\cref{f-sb-power-vs-tiers-ild}) of the
 system increases the strain on the cooling system.
-\changed{In all cases, the microfluidically-cooled cores run faster than their air-cooled counterparts.}
+\changed{In all cases, the microfluidically-cooled cores run faster than the air-cooled cores.}
 
 
 
@@ -651,7 +643,7 @@ and was validated against wire pitch and power consumption data for recent comme
 The impacts of low-k dielectrics, and 3D integration on the performance, power consumption,
 and power delivery requirements of a 32nm processing core were examined, and a hypothetical 7nm version of the same processor
 was simulated to determine the impact of alternate wire materials on the number of metal levels required for signal routing
-at advanced process nodes. \changed{The results suggest that 3D implementations of 2D systems should exhibit greater energy efficiency
+at advanced process nodes. \changed{The results suggest that 3D systems should exhibit greater energy efficiency
 than their 2D counterparts, though high performance 3D logic cores will require more aggressive cooling solutions to achieve
 performance parity. Highly-stacked high performance 3DICs were shown to require very large numbers of TSVs for power delivery,
 due in part to the increased parasitic TSV resistance and inductance introduced into the power delivery network, as well as the
@@ -687,15 +679,13 @@ as well as the SRC Educational Alliance Intel Foundation Fellowship.
 \begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{Figures/bio-will.png}}]%
 {William Wahby}
 (S13) received the B.S. and M.S. degrees in electrical and computer engineering from the
-University of Illinois at Urbana Champaign,
-Urbana, IL, USA, in 2007 and 2009, respectively. He worked
+University of Illinois at Urbana Champaign in 2007 and 2009, respectively. He worked
 as a Product Engineer at Intel until 2011, when he
 joined the Ph.D. program in electrical
 and computer engineering at the Georgia Institute
 of Technology. In 2014 he received the SRC Education Alliance
 Intel Foundation Fellowship.
-His research interests include 3DIC
-performance modeling, monolithic 3D integration, chip-scale optical interconnects, 
+His research interests include monolithic 3D integration, chip-scale optical interconnects, 
 and novel memory devices.
 \end{IEEEbiography}
 
@@ -714,7 +704,7 @@ engineering.
 His current research interests include embedded
 microfluidic cooling, power delivery modeling
 and chip-to-chip signaling modeling for high performance
-silicon interposer, and 3-D integrated systems.
+2.5D and 3D systems.
 \end{IEEEbiography}
 
 
