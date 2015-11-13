@@ -163,12 +163,7 @@ used to implement the 3DIC.
 The user must also specify the Rent constant, $k$, and Rent exponent, $p$,
 which are described in greater detail in \cref{s-interconnect-modeling}.}
 
-\begin{figure}[tb]
-	\centering
-	\includegraphics[width=2.75in]{Figures/vp-flowchart-3.png}
-	\caption{Block diagram of the simulation platform execution flow.}
-	\label{f-vp-flowchart}
-\end{figure}
+
 
 \changed{The Rent parameters are used to determine the number of TSVs required for routing signals within a 3DIC. 
 The TSV size and number are then used by the interconnect module to estimate the distribution of 
@@ -192,6 +187,13 @@ additional knowledge of the specific design under consideration.
 Similarly, off-chip interconnects are ignored when simulating both homogeneous
 and heterogeneous designs, as additional design details would be needed for accurate simulation.
 }
+
+\begin{figure}[tb]
+	\centering
+	\includegraphics[width=2.75in]{Figures/vp-flowchart-3.png}
+	\caption{Block diagram of the simulation platform execution flow.}
+	\label{f-vp-flowchart}
+\end{figure}
 
 \changed{Once the on-chip interconnect parameters are known, the overall capacitance of the wiring network can be determined,
 which can be used to estimate the on-chip interconnect power consumption. The dynamic and leakage power consumed by transistors
@@ -271,36 +273,9 @@ to determine the maximum power supply noise in the 3D stack and the number of TS
 Thermal issues are one of the greatest challenges in 3DIC design.
 In order to design a thermally robust 3D system, the relationships between device technology, system performance
 area constraints, and packaging materials and technology must be explored.
-To that end, we utilize a fast and accurate finite difference thermal model.
-
-The heat transfer equation is
-%
-	\begin{align}
-		\nabla \left( K(x,y,z) \cdot \nabla \left( T(x,y,z) \right) \right) &= P(x,y,z)	\label{eq-heat-transfer}
-	\end{align}
-%
-where $K$ and $T$ denote thermal conductivity and temperature, respectively, and $P$ is the power excitation.
-Following the scheme of \cite{xie_electrical-thermal_2011}, we discretize the heat transfer equation as
-%
-\begin{align}
-	&\frac{T_{i,j,k} - T_{i-1,j,k}}{ \frac{x_1}{k_z l_y l_x}} + \frac{T_{i,j,k} - T_{i+1,j,k}}{ \frac{x_2}{k_x l_y l_z}} \nonumber \\ 
-	&\quad+ \frac{T_{i,j,k} - T_{i,j-1,k}}{ \frac{y_1}{k_y l_x l_z}} + \frac{T_{i,j,k} - T_{i,j+1,k}}{ \frac{y_2}{k_y l_x l_z}} \nonumber \\
-	&\quad+ \frac{T_{i,j,k} - T_{i,j,k-1}}{ \frac{z_1}{k_z l_x l_z}} + \frac{T_{i,j,k} - T_{i,j,k+1}}{ \frac{z_2}{k_z l_x l_z}}  = P_{tot}
-\end{align}
-%
-where $l_x = (x_1+x_2)/2$, $l_y = (y_1+y_2)/2$, $l_z = (z_1+z_2)/2$, and where $x_i$, $y_i$, and $z_i$ ($i \in {1,2}$) are the mesh size
-along the corresponding axis. $P$ is the total power consumption in the volume of interest, shown as the shaded rectangular region in
-\cref{f-thermal-fdm}. A similar scheme can be derived for grid points along the boundary of the mesh. In the case that
-one mesh has multiple materials, we assign the volume-weighted thermal conductivity of the surrounding volume to that grid point.
-
-\begin{figure}[tb]
-	\centering
-	\includegraphics[width=2.75in]{Figures/thermal_fd_setup.png}
-	\caption{
-		Finite difference scheme. $(a)$ Points inside the stack. $(b)$ Boundary points at the face of the stack \cite{xie_electrical-thermal_2011}.
-	}
-	\label{f-thermal-fdm}
-\end{figure}
+To that end, we utilize a fast and accurate finite difference thermal model, \changed{described in \cite{xie_electrical-thermal_2011},
+with a non-conformal meshing strategy described in \cite{zhang-thermal-2014}. In the case that
+one mesh has multiple materials, we assign the volume-weighted thermal conductivity of the surrounding volume to that grid point.}
 
 \begin{figure}[tb]
 	\centering
@@ -338,32 +313,12 @@ to the 32nm node
 \cite{bai_65nm_process_2004,sakran_65nm_merom_arch_2007,mistry_45nm_process_2007,varghese_45nm_penryn_arch_2007,kumar_45nm_nehalem_arch_2009,packan_32nm_process_2009,kurd_32nm_westmere_arch_2010,yuffe_32nm_sandy_arch_2011}.
 For each test case, the chip area, number of logic transistors, number of memory transistors, and size and shape
 of the cores and memory blocks were gathered from published data. Logic cores were simulated with a Rent exponent of $0.6$,
-while memory cores used a value of $0.4$ \cite{christie_interpretation_2000}.
-\changed{In cases with integrated GPUs,
-the GPU was simulated with a Rent exponent of $0.5$. Each block is simulated separately to determine the number and
+while memory cores used a value of $0.4$, \changed{and GPUs were simulated with a Rent exponent of $0.5$} \cite{christie_interpretation_2000}.
+\changed{Each block was simulated separately to determine the number and
 pitch of metal levels required for routing and the total power consumption of each block.
 The pitch and number of metal layers used for the overall design were then set by the block which required
 the greatest number of wiring tiers (typically the CPU core). This information, along with the geometry and power requirements
-of each block are then fed into the thermal module, which determines the maximum temperature in the overall design.
-The virtual platform can accurately predict
-the wire pitch in each routing tier, as shown in \cref{f-sb-wire-pitch}.}
-
-\begin{figure}[tb]
-	\centering
-	\includegraphics[width=3.5in]{Figures/sb_wire_pitch_2.png}
-	\caption{
-		Actual and expected wire pitch in a Core i7 2700k processor.
-	}
-	\label{f-sb-wire-pitch}
-\end{figure}
-
-\changed{The 45nm and 32nm test cases all have a total of 9 metal levels. In these cases the upper wiring tier has very
-large wire size and pitch, and this tier is used primarily for power and clock distribution. Since the interconnect estimation
-module is to estimate the size and pitch of signal wires only, the top metal layer in these designs is not counted
-for the purpose of signal wire pitch validation. Rather, the pitch and size of the wires on the topmost tier is used in the.
-The upper wire tier is modeled in the power delivery simulation module of the virtual platform, but without data on the
-power noise margin and the number of power and ground pads used in these designs, detailed validation of the power
-delivery module is not possible for these test cases.}
+of each block was then used by the thermal module to determine the maximum temperature in the system.}
 
 \begin{table}
 	\centering
@@ -395,16 +350,35 @@ maximum junction temperature generated by the virtual platform have been compare
 \changed{With the exception of the Core i7 680 test case, the virtual platform shows reasonable agreement with the
 published data for these processors. The 45nm and 32nm test cases all have a total of 9 metal layers, but in all cases
 the wires on the top layer are sized very large and used for power and clock delivery, rather than signal routing.
-The simulator is significantly underestimating both the number of wiring tiers
+Since the interconnect estimation
+module is used estimate the size and pitch of signal wires only, the top metal layer in these designs is not counted
+for the purpose of signal wire pitch validation. Instead, the upper wire tier is modeled in the power delivery simulation
+module of the virtual platform, but without data on the
+power noise margin and the number of power and ground pads used in these designs, detailed validation of the power
+delivery module is not possible for these test cases.
+In addition to the total number of metal levels, the simulator
+can accurately predict the wire pitch in each routing tier, as shown in \cref{f-sb-wire-pitch}.}
+
+\begin{figure}[tb]
+	\centering
+	\includegraphics[width=3.5in]{Figures/sb_wire_pitch_2.png}
+	\caption{
+		Actual and expected wire pitch in a Core i7 2700k processor.
+	}
+	\label{f-sb-wire-pitch}
+\end{figure}
+
+\changed{The simulator is significantly underestimating both the number of wiring tiers
 and the overall power consumption for the Core i7 680 test case; this error could be due to the fact that the
 Core i7 680 is the only design under consideration which was implemented as a multi-chip module (MCM), with a 32nm CPU die 
 integrated with a 45nm GPU die in the same package.}
-
-\changed{When simulating heterogeneous
-systems, the virtual platform currently lacks the ability to estimate the power required for inter-block communication. While this
+\changed{The simulator currently lacks the ability to estimate the power required for inter-block communication in
+heterogeneous systems. While this
 lack will affect the power estimates for all test cases, it is likely that the power required for communication between the two
 separate dice in the Core i7 680 package is much larger than the power requirements for communication between GPU and logic cores
 integrated on the same die.}
+
+
 
 \changed{While the worst-case error in these benchmarks is relatively high ($27.8\%$), the value of this simulation framework lies
 in its ability to consider many different effects very rapidly (a single design scenario can be evaluated in several
@@ -559,22 +533,13 @@ as thin as possible, to minimize the distance that signals must travel when they
 \subsection{Power Delivery}
 In order for an IC to function reliably,
 the power delivery network must be robust enough to prevent undue fluctuation of the supply voltage \cite{huang_power_2012}.
-Power delivery becomes more challenging as the power density that must be delivered increases.
-Power delivery in 3DICs becomes especially challenging, as a high performance 3DIC may have a significantly
+Power delivery in 3DICs becomes challenging, as a high performance 3DIC may have a significantly
 higher areal power density than an equivalent 2D chip, while simultaneously having less space available for
 routing power delivery resources. Additionally, in 3DICs power must be delivered to each tier in the stack
 through TSVs, introducing additional parasitic resistance and inductance into the wiring network.
 
-The most straightforward way to ease the burden on the power network is to reduce the total power consumption of the system.
-The total power consumption of an IC can be reduced by moving to a 3D configuration, though the 
-areal power density increases as more tiers are stacked atop one another.
-As the power density increases, delivering power to all of the tiers of the 3D stack
-becomes more challenging, and many TSVs may be required to minimize droop in the
-supply voltage of advanced 3DICs.
-Silicon area is already a limited resource, and the tradeoff between allocating TSVs for signaling
-or power delivery must be managed carefully.
-
-The number of power connections to each tier required for stable operation is primarily determined by the maximum power draw of the system,
+The number of power connections to each tier required for stable operation is primarily determined by the maximum power draw and power density 
+of the system,
 which in turn is strongly dependent upon the interlayer dielectric and the substrate thickness (in 3D configurations).
 Both 2D and 3D systems benefit from the development of ultralow-k interlayer dielectric materials, and 
 the use of thin substrates in 3D configurations can further reduce the demands on the power supply network.
@@ -634,22 +599,12 @@ the need to keep the current density carried by each TSV low enough to avoid ele
 
 
 \subsection{Thermal management} \label{s-3D-thermal}
-Thermal management is a key challenge for 3DICs. In the previous sections it has been shown that transforming a
-2D design into a 3DIC can yield significant reductions in the average wire length and power consumption of the system
-While the total power dissipation of an IC is expected to decrease as the device is partitioned into increasing numbers of layers 
+Thermal management is a key challenge for 3DICs.
+While the total power dissipation of an IC is expected to decrease as the systemis partitioned into increasing numbers of layers 
 (as shown in \cref{f-sb-power-vs-tiers-ild}),
 that power reduction is not sufficient to keep the areal power density from increasing as tiers are stacked atop one another,
-leading to increased stress on the cooling system, and eventually to unreasonable operating temperatures.
-Since most conventional 2D ICs are already operating at their thermal limits, a system transformed from 2D to 3D must necessarily either
-run at a lower operating frequency, or utilize a more aggressive cooling solution.
+leading to increased stress on the cooling system.
 
-In order to quantify the thermal impact of 3D stacking, the performance of a single 32nm Sandy Bridge CPU core is examined 
-\changed{in both 2D and 3D configurations. Since 3DICs may require aggressive cooling strategies, the CPU core was simulated
-with both air-cooled and microfluidic heat sinks. In all cases the heat sinks are located on the back side of the top die
-in the stack. The air-cooled heat sink has a heat transfer coefficient of $1.83$ W/cm$^2$K and the microfluidic heat sink
-has a heat transfer coefficient of $4.63$ W/cm$^2$K, as reported in \cite{zhang-micropinfin-heat-sink-2013}. Boundaries internal
-to the package are assigned a heat transfer coefficient of $0.005$ W/cm$^2$K. The
-thermal conductivities used for the materials in the stack are presented in \cref{t-thermal-materials}.}
 \begin{table}[tb]
 	\centering
 	\caption{Material parameters used for thermal simulation}
@@ -669,20 +624,6 @@ thermal conductivities used for the materials in the stack are presented in \cre
 	\label{t-thermal-materials}	
 \end{table}
 
-The CPU core was simulated in each configuration to find 
-the maximum operating frequency which could be maintained while keeping the maximum temperature below 90$^\circ$C.
-\changed{In order to focus on solely the thermal aspects of 3D stacking we assumed that the system was thermally-limited, and ignored other
-factors which could limit the maximum operating frequency of the chip, such as clock distribution. Additionally,
-the power consumed by the cooling solution is ignored in both cases, in order to isolate intrinsic die-level
-effects from the details of the particular heat sink used.}
-As can be seen in \cref{f-sb3d-freq-vs-tiers}, the maximum frequency decreases steadily as the CPU is folded across
-more and more tiers, as the increased power density (\cref{f-sb-power-vs-tiers-ild}) of the 3D 
-system increases the strain on the cooling system.
-\changed{In all cases, the microfluidically-cooled cores run faster than their air-cooled counterparts. In \cref{f-sb3d-epc-vs-tiers} the energy efficiency of the 32nm
-Sandy Bridge CPU core is shown. Both the air-cooled and microfluidically-cooled 3D designs are more energy efficient than the 2D designs.
-These results suggest that an aggressively-cooled high performance 3D logic core could simultaneously achieve higher performance and energy
-efficiency than a conventional air-cooled 2DIC.}
-
 \begin{figure}[tb]
 	\centering
 	\includegraphics[width=3.5in]{Figures/SB3D_max_frequency__air_vs_water_cooling.png}
@@ -693,14 +634,31 @@ efficiency than a conventional air-cooled 2DIC.}
 	\label{f-sb3d-freq-vs-tiers}
 \end{figure}
 
-\begin{figure}[tb]
-	\centering
-	\includegraphics[width=3.5in]{Figures/sb3d_air_vs_water_epc_2.png}
-	\caption{
-		Energy consumed per clock cycle for 2D and 3D 32nm Sandy Bridge CPU cores under air cooling (blue) and microfluidic cooling (red).
-		}
-	\label{f-sb3d-epc-vs-tiers}
-\end{figure}
+In order to quantify the thermal impact of 3D stacking, the performance of a single 32nm Sandy Bridge CPU core is examined 
+\changed{in both 2D and 3D configurations, and with both air-cooled and microfluidic heat sinks. 
+In all cases the heat sinks are located on the back side of the top die
+in the stack. The air-cooled heat sink has a heat transfer coefficient of $1.83$ W/cm$^2$K and the microfluidic heat sink
+has a heat transfer coefficient of $4.63$ W/cm$^2$K, as reported in \cite{zhang-micropinfin-heat-sink-2013}. Boundaries internal
+to the package are assigned a heat transfer coefficient of $0.005$ W/cm$^2$K. The
+thermal conductivities used for the materials in the stack are presented in \cref{t-thermal-materials}.}
+
+The CPU core was simulated in each configuration to find 
+the maximum operating frequency which could be maintained while keeping the maximum temperature below 90$^\circ$C.
+\changed{In order to focus on solely the thermal aspects of 3D stacking we assumed that the system was thermally-limited, and ignored other
+factors which could limit the maximum operating frequency of the chip, such as clock distribution. Additionally,
+the power consumed by the cooling solution is ignored in both cases, in order to isolate intrinsic die-level
+effects from the details of the particular heat sink used.}
+
+
+
+
+
+As can be seen in \cref{f-sb3d-freq-vs-tiers}, the maximum frequency decreases steadily as the CPU is folded across
+more and more tiers, as the increased power density (\cref{f-sb-power-vs-tiers-ild}) of the 3D 
+system increases the strain on the cooling system.
+\changed{In all cases, the microfluidically-cooled cores run faster than their air-cooled counterparts.}
+
+
 
 
 %% =================================
