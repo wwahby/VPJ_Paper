@@ -160,13 +160,13 @@ The overall execution flow is shown in \cref{f-vp-flowchart}.
 %leakage parameters, wiring material, and expected die area and thickness.
 %For 3D designs, the user must also specify the desired TSV diameter and aspect ratio, as well as the number of tiers
 %used to implement the 3DIC.}
-\changed{The interconnect module first estimates the distribution of 
-wire lengths in the system, which is in turn used to determine the number of wiring tiers required for signal routing, 
+\changed{First, the distribution of 
+wire lengths in the system is estimated, which is in turn used to determine the number of wiring tiers required for signal routing, 
 the wire pitch on each tier, and the number of repeaters needed to meet the delay constraint.}
 \changed{
-The logic block under consideration is treated as a homogeneous design.
-This assumption is commonly used with stochastic wirelength models and allows the rapid estimation of the on-chip 
-wire parameters without a priori knowledge about the design specifics, at the cost of the 
+The system is treated as a homogeneous logic block.
+This assumption is commonly used with stochastic wiring models to enable rapid estimation of the 
+wire parameters without a priori knowledge about the design specifics, at the cost of some 
 loss of insight into fine-grained design details \cite{davis_stochastic_1998,joyner_impact_2001,sekar_intsim_2007}.
 }
 
@@ -258,8 +258,7 @@ Thermal issues are one of the greatest challenges in 3DIC design.
 In order to design a thermally robust 3D system, the relationships between device technology, system performance
 area constraints, and packaging materials and technology must be explored.
 To that end, we utilize a fast and accurate finite difference thermal model, \changed{described in \cite{xie_electrical-thermal_2011},
-with a non-conformal meshing strategy described in \cite{zhang-thermal-2014}. If a mesh has multiple materials, 
-we assign the volume-weighted thermal conductivity of the surrounding volume to that point.}
+with a non-conformal meshing strategy described in \cite{zhang-thermal-2014}.}
 
 \begin{figure}[tb]
 	\centering
@@ -374,7 +373,7 @@ and performance of 2D and 3DICs.}
 
 \section{2D: Impact of materials innovation} \label{s-2d-investigations}
 One path towards increasing system performance is to achieve improvements in the wiring materials.
-The permittivity of the interlayer dielectric (ILD) material has a strong effect on the parasitic
+The permittivity of the interlayer dielectric (ILD) directly impacts the parasitic
 capacitance of the on-chip wires,
 which in turn impacts the wire RC delay and power consumption. Additionally, decreasing the RC delay
 reduces the need for power-hungry repeaters.
@@ -438,8 +437,8 @@ can have a large impact on the wiring stack.
 \subsection{Reducing power consumption}
 Implementing a design in 3D can greatly reduce the average length of the on-chip interconnects,
 leading to reductions in the average delay and power consumption of the signaling network \cite{joyner_impact_2001}.
-In order to examine the impact of 3D integration on power consumption,
-a single 18.5mm$^2$ Sandy Bridge processing core was simulated in different 3D configurations.
+In order to examine the impacts of 3D integration, a single 18.5mm$^2$ CPU core from a 32nm Sandy Bridge Core i7 2700k
+is examined throughout this section.
 Unless otherwise noted, we assume a TSV aspect ratio of 20:1, and require that the TSVs use
 less than 10\% of the total die area. Typically, 3DIC designs limit the TSV area to 1\% or less
 to minimize the cannibalization of active area, but we have relaxed that limit here for illustrative purposes.
@@ -457,10 +456,9 @@ is examined throughout this section.
 	\label{f-2d-materials-num-levels-rho-7nm}
 \end{figure}
 
-We consider a 3D integration scenario in which logic gates and blocks can be placed on
+In order to investigate the ultimate limits of 3D integration, we consider a scenario in which logic gates and blocks can be placed on
 any tier, and in which TSVs are used as point to point interconnects.
 The core is assumed to be partitioned into $N$ equal pieces, which are then stacked vertically.
-This configuration is considered in order to illustrate the ultimate limits of 3D integration.
 
 Significant power savings can be obtained by moving to a 3D design, as shown in \cref{f-sb-power-vs-tiers-ild},
 though the power reduction comes at the cost of increased areal power density, ultimately placing more
@@ -573,6 +571,13 @@ While the total power dissipation of an IC is expected to decrease as the system
 (as shown in \cref{f-sb-power-vs-tiers-ild}),
 the areal power density will still increase as tiers are stacked atop one another,
 leading to increased stress on the cooling system.
+In order to quantify the thermal impact of 3D stacking, the performance of a single 32nm Sandy Bridge CPU core is examined 
+\changed{in both 2D and 3D configurations, and with both air-cooled and microfluidic heat sinks. 
+In all cases the heat sinks are located on the back side of the top die
+in the stack. The air-cooled heat sink has a heat transfer coefficient of $1.83$ W/cm$^2$K and the microfluidic heat sink
+has a heat transfer coefficient of $4.63$ W/cm$^2$K \cite{zhang-micropinfin-heat-sink-2013}. Boundaries internal
+to the package are assigned a heat transfer coefficient of $0.005$ W/cm$^2$K. The
+thermal conductivities used for the materials in the stack are presented in \cref{t-thermal-materials}.}
 
 \begin{table}[tb]
 	\centering
@@ -603,13 +608,7 @@ leading to increased stress on the cooling system.
 	\label{f-sb3d-freq-vs-tiers}
 \end{figure}
 
-In order to quantify the thermal impact of 3D stacking, the performance of a single 32nm Sandy Bridge CPU core is examined 
-\changed{in both 2D and 3D configurations, and with both air-cooled and microfluidic heat sinks. 
-In all cases the heat sinks are located on the back side of the top die
-in the stack. The air-cooled heat sink has a heat transfer coefficient of $1.83$ W/cm$^2$K and the microfluidic heat sink
-has a heat transfer coefficient of $4.63$ W/cm$^2$K, as reported in \cite{zhang-micropinfin-heat-sink-2013}. Boundaries internal
-to the package are assigned a heat transfer coefficient of $0.005$ W/cm$^2$K. The
-thermal conductivities used for the materials in the stack are presented in \cref{t-thermal-materials}.}
+
 
 The CPU core was simulated in each configuration to find 
 the maximum operating frequency which could be maintained while keeping the maximum temperature below 90$^\circ$C.
@@ -729,7 +728,7 @@ GA, USA.
 (summa cum laude) degree from Auburn University,
 Auburn, AL, USA, in 1999, and the M.S. and Ph.D.
 degrees in electrical and computer engineering from
-the Georgia Institute of Technology (Georgia Tech),
+the Georgia Institute of Technology,
 Atlanta, GA, USA, in 2000 and 2003, respectively.
 He is currently an Associate Professor and the
 ON Semiconductor Junior Professor with the School
@@ -753,7 +752,7 @@ five from the IEEE Electronic Components and Technology Conference, and
 three from the IEEE International Interconnect Technology Conference.
 \end{IEEEbiography}
 
-
+%\vspace{-0.3in}
 
 \vfill
 
