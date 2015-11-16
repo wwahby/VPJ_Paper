@@ -116,7 +116,7 @@ Low-k dielectrics can be used to reduce the parasitic capacitances in the wiring
 simultaneously improving RC delay and reducing the power consumption of the wiring network.
 Alternate wiring materials are also being considered to improve the RC delay of on-chip interconnects,
 as well as to reduce the risk of electromigration failures. Fluidic cooling can be used to mitigate the thermal challenges
-in high performance 3DICs. In order to understand the 3D design space, and to decide when a 3D system
+in high performance 3DICs. In order to understand when a 3D system
 might have advantages over a 2D system, all of these factors must be modeled simultaneously.
 \changed{Performing these coupled simulations with high fidelity is computationally intensive, however, rendering
 thorough exploration of the 3DIC design space challenging.}
@@ -155,12 +155,11 @@ The simulation platform consists of the following:
 \end{enumerate}
 
 The overall execution flow is shown in \cref{f-vp-flowchart}.
-\changed{The user first inputs high-level design parameters, including the target clock frequency,
-estimated logic activity factor (the fraction of transistors switching on any given clock cycle), transistor size and
-leakage parameters, wiring material, and expected die area and thickness.
-For 3D designs, the user must also specify the desired TSV diameter and aspect ratio, as well as the number of tiers
-used to implement the 3DIC.}
-
+%\changed{The user first inputs high-level design parameters, including the target clock frequency,
+%estimated logic activity factor (the fraction of transistors switching on any given clock cycle), transistor size and
+%leakage parameters, wiring material, and expected die area and thickness.
+%For 3D designs, the user must also specify the desired TSV diameter and aspect ratio, as well as the number of tiers
+%used to implement the 3DIC.}
 \changed{The interconnect module first estimates the distribution of 
 wire lengths in the system, which is in turn used to determine the number of wiring tiers required for signal routing, 
 the wire pitch on each tier, and the number of repeaters needed to meet the delay constraint.}
@@ -185,30 +184,28 @@ and heterogeneous designs, as additional design details would be needed for accu
 
 \begin{figure}[tb]
 	\centering
-	\includegraphics[width=2.75in]{Figures/vp-flowchart-3.png}
+	\includegraphics[width=2.75in]{Figures/vp-flowchart-4.png}
 	\caption{Block diagram of the simulation platform execution flow.}
 	\label{f-vp-flowchart}
 \end{figure}
 
-\changed{Once the on-chip interconnect parameters are known, the overall capacitance of the wiring network can be determined,
-which can be used to estimate the on-chip interconnect power consumption. The dynamic and leakage power consumed by transistors
-is also calculated to determine the overall power requirements for the design. Once the total power consumption is known,
-it is used in conjunction with the TSV resistance and inductance
+\changed{Once the on-chip interconnect parameters are known, the on-chip interconnect power consumption can be estimated.
+The transistor dynamic and leakage power is also calculated to determine the overall power requirements for the design.
+Once the total power consumption is known, it is used in conjunction with the TSV resistance and inductance
 and the package pin resistance and inductance
 to estimate the simultaneous switching noise in the power delivery network. Additional TSVs (for 3D designs)
 or power/ground pads (for 2D designs) are inserted until the simultaneous switching noise drops to acceptable levels.
 At this point the tool checks that the total area allocated to TSVs does not exceed a user-specified limit; 
-if the demand for TSVs outstrips available area, the TSV diameter is reduced and the interconnect and power modules are rerun.}
+if TSV demand outstrips available area, the TSV diameter is reduced and the interconnect and power modules are rerun.}
 
 \changed{Once the design passes the TSV area check, the thermal module is used to estimate the maximum temperature in the 2D
 or 3D design. In order to do this, the material parameters of the die, wiring tiers (including wires and interlayer
 dielectric), TSVs, and interstitial layers are input into a finite difference thermal simulator, along with a heat transfer
 boundary condition representing the heatsink. If the maximum temperature in the stack
 exceeds a user-defined limit, the clock frequency is reduced and the previous modules are rerun until
-the maximum temperature is sufficiently reduced. The user can also specify that the logic activity factor be reduced,
-or that the wire or interlayer dielectric materials be modified, as alternate means of power reduction.
-Once the design under consideration satisfies both the TSV area
-constraint and the thermal constraint the final design parameters are reported.}
+the maximum temperature is sufficiently reduced. As alternate means of power reduction, the logic activity factor can also be reduced
+or the wire or interlayer dielectric materials be modified.
+The final design parameters are reported once the constraints on temperature and TSV area are satisfied. }
 
 
 %% =================================
