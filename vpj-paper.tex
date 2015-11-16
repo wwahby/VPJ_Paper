@@ -164,12 +164,14 @@ used to implement the 3DIC.}
 \changed{The interconnect module first estimates the distribution of 
 wire lengths in the system, which is in turn used to determine the number of wiring tiers required for signal routing, 
 the wire pitch on each tier, and the number of repeaters needed to meet the delay constraint.}
-
 \changed{
-For the purposes of on-chip interconnect modeling, the logic block under consideration is treated as a homogeneous design.
+The logic block under consideration is treated as a homogeneous design.
 This assumption is commonly used with stochastic wirelength models and allows the rapid estimation of the on-chip 
 wire parameters without a priori knowledge about the design specifics, at the cost of the 
-loss of insight into the fine-grained details of the design \cite{davis_stochastic_1998,joyner_impact_2001,sekar_intsim_2007}.
+loss of insight into fine-grained design details \cite{davis_stochastic_1998,joyner_impact_2001,sekar_intsim_2007}.
+}
+
+\changed{
 In order to simulate complex heterogeneous designs, the user can input the expected parameters and position of each block
 in the system. In this case each block is modeled separately, 
 and the results are assembled into an overall power density map of each tier in the design
@@ -190,7 +192,7 @@ and heterogeneous designs, as additional design details would be needed for accu
 
 \changed{Once the on-chip interconnect parameters are known, the overall capacitance of the wiring network can be determined,
 which can be used to estimate the on-chip interconnect power consumption. The dynamic and leakage power consumed by transistors
-is also calculated, to determine the overall power requirements for the design. Once the total power consumption is known,
+is also calculated to determine the overall power requirements for the design. Once the total power consumption is known,
 it is used in conjunction with the TSV resistance and inductance
 and the package pin resistance and inductance
 to estimate the simultaneous switching noise in the power delivery network. Additional TSVs (for 3D designs)
@@ -221,17 +223,16 @@ the number of metal layers used for wiring must be estimated, as well as the pit
 in order to determine the overall wiring capacitance, which is a key factor in the maximum wire delay and power consumption.}
 
 Stochastic wire length models have been shown to be effective tools for the rapid prediction
-of interconnect properties in conventional 2DICs
-\cite{davis_stochastic_1998,davis_stochastic_1998-1,sekar_intsim_2007}.
-The method was extended to 3DICs in 
-\cite{rahman_wire-length_1999-1,joyner_three-dimensional_2000},
-but the impact of TSV-induced gate-blockage was not considered until \cite{kim_through-silicon-via_2009-1}
+of interconnect properties in 2DICs
+\cite{davis_stochastic_1998,sekar_intsim_2007}.
+and 3DICs
+\cite{joyner_three-dimensional_2000},
+but the impact of TSV-induced gate-blockage in 3DICs was not considered until \cite{kim_through-silicon-via_2009-1}
 introduced a correction to account for finite TSV size. The method of \cite{kim_through-silicon-via_2009-1}
 requires brute-force calculation, however, which is too computationally intensive for rapid simulation. 
 To address this issue, a compact correction to the 
 wire length distribution was introduced in \cite{wahby_wld_2013}, which is used in this work to
 estimate the distribution of wire lengths in 2D and 3D ICs.
-
 Once the wire length distribution is known, the wire pitch and number of metal layers are determined using a bottom-up wire scaling 
 technique \cite{venkatesan_performance_1999}, and a delay-optimal repeater insertion scheme 
 is used to determine the size and number of repeaters required to meet timing constraints \cite{bakoglu_optimal_1985}.
@@ -405,7 +406,7 @@ as well as a reduction in the number and size of the repeaters needed to meet ti
 	\centering
 	\includegraphics[width=3.5in]{Figures/total_power_sb2d_ild_permittivity_sweep_3.png}
 	\caption{
-		Impact of interlayer dielectric (ILD) permittivity on the power consumed by wires and repeaters in a Sandy Bridge Core i7 2700k processor core.
+		Impact of interlayer dielectric (ILD) permittivity on the power consumed by wires and repeaters in a Sandy Bridge Core i7 2700k core.
 	}
 	\label{f-2d-materials-power-consumption}
 \end{figure}
@@ -426,12 +427,13 @@ alternate material, and \textit{7nm B}, in which only wires thinner than 25nm ar
 The bulk resistivity of the alternate wiring material 
 in both the 32nm and 7nm test cases was swept from 10 $\Omega$nm (slightly lower than bulk Ag), to 60 $\Omega$nm 
 (slightly higher than bulk W). For simplicity, the specularity and reflection
-parameters of the alternate wiring material are not modified. The results are shown in \cref{f-2d-materials-num-levels-rho-7nm}.
-Since the lowest metal layers are the most critical for wire routing, small changes at these dimensions can have
-a large impact on the overall wiring stack.
-As can be seen in \cref{f-2d-materials-num-levels-rho-7nm}, the use of higher resistivity metals can significantly
-increase the number of metal levels required for interconnect routing, but this effect can
+parameters of the alternate wiring material are not modified.
+As can be seen in \cref{f-2d-materials-num-levels-rho-7nm}, higher resistivity metals can significantly
+increase the number of metal levels required for signal routing, but this effect can
 be mitigated by restricting the use of alternate metals to the lowest wiring tiers.
+Since the greatest numbers of wires are routed in the lowest metal tiers, small changes to their dimensions
+can have a large impact on the wiring stack.
+
 
 
 \section{3D: Power reduction without exotic materials} \label{s-3d-investigations}
@@ -537,9 +539,9 @@ from die thinning as from ULK dielectrics.
 	\label{f-3d-psn-ild-tiers}
 \end{figure}
 
-Another method to reduce power supply noise is to integrate decoupling capacitors onto the die, interposer, or package
-in order to compensate for the inductance of the power delivery network. While this practice can improve
-power quality, it also sets up a tradeoff between utilizing die area for logic, decoupling capacitors, and power delivery.
+Another method to reduce power supply noise is to integrate decoupling capacitors onto the die
+to compensate for the inductance of the power delivery network. While this practice can improve
+power quality, it also sets up a tradeoff between utilizing die area for logic and power delivery.
 
 In order to explore this tradeoff, the 32nm Sandy Bridge test case was simulated in several 2D and 3D configurations with
 varying amounts of silicon area allocated for chip- or interposer-level 
