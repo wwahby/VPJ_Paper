@@ -56,9 +56,11 @@
 
 %% paper title
 %% can use linebreaks \\ within to get better formatting as desired
-\title{\changed{Compact Modeling of Trends in 2D and 3DIC Power, Signal, and Thermal Performance}}
+%\title{\changed{Compact Modeling of Trends in 2D and 3DIC Power, Signal, and Thermal Performance}}
+\title{\changed{3DVP: A CAD Tool for Rapid Simulation of Trends in 3DIC Performance and Power Consumption}}
+%\title{\changed{3DVP: A Compact Tool for Investigation of Trends in 3DIC Performance and Power Consumption}}
 \author{William~Wahby,~\IEEEmembership{Student~Member,~IEEE}, Li~Zheng, Yang~Zhang,~\IEEEmembership{Student~Member,~IEEE}, and Muhannad~Bakir,~\IEEEmembership{Senior~Member,~IEEE}%
-	\thanks{Original manuscript received July 11, 2015. \changed{Revised manuscript received October ??, 2015.} This work was supported in part by the SRC GRC project 2254.001, and by the SRC Educational Alliance Intel Foundation Fellowship}%
+	\thanks{Original manuscript received July 11, 2015. \changed{Revised manuscript received November ??, 2015.} This work was supported in part by the SRC GRC project 2254.001, and by the SRC Educational Alliance Intel Foundation Fellowship}%
 \thanks{William Wahby, Li Zheng, Yang Zhang, and Muhannad Bakir are with the School of Electrical and Computer Engineering, Georgia Institute of Technology, Atlanta, GA, 30332 USA. (emails: wwahby3@gatech.edu; lizheng@gatech.edu; steven.zhang@gatech.edu; muhannad.bakir@mirc.gatech.edu)}}
 
 
@@ -75,15 +77,16 @@
 \begin{abstract}
 In order to compare the costs and benefits of 2D and 3DIC technologies, an compact simulation framework for 3DIC system evaluation and
 design space exploration is developed. The simulator is implemented in MATLAB, and is composed of several
-simulation modules, including a compact 3DIC wire length distribution,
+modules, including a compact 3DIC wire length distribution,
 a wire pitch and repeater insertion module, a 2D and 3DIC power supply noise
 estimation module, and a finite difference thermal simulator.
 The simulator is validated against published data for several commercial 2D processors at the 65nm, 45nm, and 32nm nodes.
 In order to quantify the benefits of both 2D and 3D integration approaches, a 32nm CPU core is modeled and the impact of several
 technology parameters, including interlayer dielectric (ILD) material, on-chip wire material, die thickness, 
-and cooling solution are explored. 3D integration is shown to provide a significant power reduction for the 32nm test case,
+and cooling solution are explored. The results suggest that 3D integration may provide a significant power reduction for the 32nm test case,
 but more aggressive cooling solutions must be employed to maintain the same clock frequency, due to the increased
-areal power density of the 3D CPU.
+areal power density of the 3D CPU. \changed{The simulation tool is available online at 
+www.ece.gatech.edu/research/labs/i3ds.}
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -94,14 +97,13 @@ Three-dimensional integrated circuits, integrated circuit modeling, integrated c
 %% ======== INTRODUCTION ===========
 %% =================================
 \section{Introduction}
-\IEEEPARstart{E}{conomic} and physical challenges to conventional 2D scaling are driving interest in 3D integration,
+\IEEEPARstart{E}{conomic} and physical challenges to transistor scaling are driving interest in 3D integration,
 but uncertainty regarding the fabrication costs and system-level tradeoffs of 3D integration
-complicate 3DIC design. Projections of 3DIC cost and performance are further complicated by the strongly-coupled
-nature of communication, power delivery, and thermal management in 3DICs. Additionally, the 3DIC
+complicate 3DIC design. Projections of 3DIC cost and performance are further impacted by the strongly-coupled
+nature of communication, power delivery, and thermal management in 3DICs. The 3DIC
 design space is complex, as 3DIC design encompasses a broad spectrum of possible design choices and integration
 methodologies, ranging from 2.5D interposer-based integration all the way to finely-grained monolithic 
 3DICs, as shown in \cref{f-3d-spectrum}, each with unique costs and strengths.
-
 \begin{figure}[!tb]
 	\centering
 	\includegraphics[width=3.5in]{Figures/spectrum_of_3d_4.png}
@@ -110,48 +112,57 @@ methodologies, ranging from 2.5D interposer-based integration all the way to fin
 			and lower cost systems.}
 	\label{f-3d-spectrum}
 \end{figure}
-
 Additionally, different technologies must be evaluated for use in both 2D and 3DICs.
 Low-k dielectrics can be used to reduce the parasitic capacitances in the wiring stack,
 simultaneously improving RC delay and reducing the power consumption of the wiring network.
 Alternate wiring materials are also being considered to improve the RC delay of on-chip interconnects,
-as well as to reduce the risk of electromigration failures. Fluidic cooling can be used to mitigate the thermal challenges
-in high performance 3DICs. In order to understand when a 3D system
+as well as to reduce the impact of electromigration \cite{adelmann_alternative_2014}. 
+Liquid cooling can be used to mitigate the thermal challenges
+in high performance 3DICs\cite{tuckerman-high-performance-1981,zhang_within-tier_2013}. In order to understand when a 3D system
 might have advantages over a 2D system, all of these factors must be modeled simultaneously.
 \changed{Performing these coupled simulations with high fidelity is computationally intensive, however, rendering
 thorough exploration of the 3DIC design space challenging.}
+\changed{Compact tools have been developed to estimate 2DIC performance \cite{venkatesan-optimal-2001,sekar_intsim_2007}, but
+no analog exists for 3DICs. Additionally, the 2D tools do not model power delivery or heat extraction, 
+which are likely to be challenges for 3DICs.}
 
-In order to investigate the tradeoffs inherent in 3DIC design, we present a compact simulation platform for
-rapid exploration of the 3DIC design space. \changed{The aim of this work is the creation of a compact simulation tool enabling
-the rapid investigation of what-if questions, in order to understand the trends in performance and power consumption
-as materials, devices, and integration methodologies are changed. The compact modeling platform presented here can
-then be used to guide more precise investigations into the details of 3DIC physical design.}
 
-The simulation platform consists of several simulation
-modules specially tailored for 3DICs, described in \cref{s-virtual-platform}.
-\changed{The details of the on-chip wires, TSVs, power delivery network, and steady-state thermal profile
-are all modeled in order to develop a complete picture of the overall 3D system performance.}
-The simulation platform can also be applied to 2D ICs, allowing for direct comparison of 3D integration
-and other more conventional technological improvements.
+%The novel contribution of this work is the development of a compact tool capable of
+%rapidly estimating the power consumption, simultaneous switching noise, and thermal profile
+%of 2DICs and 3DICs.
+%The aim of this work is to investigate trends in system performance and power consumption
+%as materials, devices, and integration methodologies are varied.
+%This simulation tool is intended to help answer what-if questions,
+%to guide more precise investigations into the details of 3DIC physical design.
 
-\changed{This paper first presents the specifics of the models used, and then segues into validation and predictions.}
+\changed{The novel contribution of this work is the development of a compact tool capable of rapidly simulating the
+properties of 3DIC on-chip signal and power delivery networks while properly accounting for the impact of TSV area.
+The simulator estimates the power consumption, simultaneous switching noise, and thermal profile of 2DICs and 3DICs, 
+and enables the investigation of trends in performance and power consumption
+as materials, devices, and integration methodologies are varied.
+The details of the on-chip wires, TSVs, power delivery network, and steady-state thermal profile
+are all modeled in order to develop a self-consistent picture of the overall 3D system performance.
+The simulator is intended to help answer what-if questions
+and to guide more precise investigations
+into the details of 3DIC physical design.}
+
+\changed{This paper first presents the modeling details, followed by validation and predictions. 
 In \cref{s-virtual-platform} the details of the models used and their interactions are presented.
-\changed{In \cref{s-validation} the simulation framework is benchmarked against published
-wirelength and TDP data for several commercial processors.}
+In \cref{s-validation} the simulation framework is benchmarked against published
+wire pitch and TDP data for several commercial processors.}
 The simulation tool is used to investigate the impacts of advanced
-technologies and integration methodologies on a 32nm Sandy Bridge i7 processing core in \cref{s-2d-investigations,s-3d-investigations}.
-Specifically, the impacts of interlayer dielectric material, wire material, and 2D vs 3D integration on the power consumption,
-power supply noise, and number of metal layers required for routing are considered.
+technologies on a 32nm Sandy Bridge i7 processing core in \cref{s-2d-investigations,s-3d-investigations}.
+Specifically, the impacts of interlayer dielectric material, wire material, and 3D integration on the power consumption,
+power supply noise, and number of metal layers required for routing are investigated.
 
 \section{Simulation Framework} \label{s-virtual-platform}
-\changed{The source code for the integrated simulation framework is available online at www.ece.gatech.edu/research/labs/i3ds}.
 The simulation platform consists of the following:
  \begin{enumerate}
 	\item 3D wire length distribution which accounts for TSV area
 	\item Metal layer pitch determination algorithms capable of handling alternate wiring materials
 	\item An optimal repeater insertion scheme
-	\item Power supply noise models which account for power delivery in 3DICs
-	\item  A finite difference thermal module for analyzing the thermal impacts of 3D integration
+	\item A power supply noise model for 3DICs
+	\item A finite difference thermal module for analyzing the thermal impacts of 3D integration
 \end{enumerate}
 
 The overall execution flow is shown in \cref{f-vp-flowchart}.
@@ -182,21 +193,22 @@ Similarly, off-chip interconnects are ignored when simulating both homogeneous
 and heterogeneous designs, as additional design details would be needed for accurate simulation.
 }
 
+
+
+\changed{Once the on-chip interconnect parameters are known, the on-chip interconnect power consumption can be estimated.
+The transistor dynamic and leakage power is also calculated to determine the overall power requirements for the design.
+The total power consumption is used in conjunction with the TSV and package pin resistance and inductance
+to estimate the simultaneous switching noise in the power delivery network. Additional TSVs (for 3D designs)
+or pads (for 2D designs) are inserted until the simultaneous switching noise drops to acceptable levels.
+At this point the tool checks that the total TSV area does not exceed a user-specified limit; 
+if TSV demand outstrips available area, the TSV diameter is reduced and the interconnect and power modules are rerun.}
+
 \begin{figure}[tb]
 	\centering
 	\includegraphics[width=2.75in]{Figures/vp-flowchart-4.png}
 	\caption{Block diagram of the simulation platform execution flow.}
 	\label{f-vp-flowchart}
 \end{figure}
-
-\changed{Once the on-chip interconnect parameters are known, the on-chip interconnect power consumption can be estimated.
-The transistor dynamic and leakage power is also calculated to determine the overall power requirements for the design.
-Once the total power consumption is known, it is used in conjunction with the TSV resistance and inductance
-and the package pin resistance and inductance
-to estimate the simultaneous switching noise in the power delivery network. Additional TSVs (for 3D designs)
-or power/ground pads (for 2D designs) are inserted until the simultaneous switching noise drops to acceptable levels.
-At this point the tool checks that the total area allocated to TSVs does not exceed a user-specified limit; 
-if TSV demand outstrips available area, the TSV diameter is reduced and the interconnect and power modules are rerun.}
 
 \changed{Once the design passes the TSV area check, the thermal module is used to estimate the maximum temperature in the 2D
 or 3D design. In order to do this, the material parameters of the die, wiring tiers (including wires and interlayer
@@ -228,10 +240,9 @@ but the impact of TSV-induced gate-blockage in 3DICs was not considered until \c
 introduced a correction to account for finite TSV size. The method of \cite{kim_through-silicon-via_2009-1}
 requires brute-force calculation, however, which is too computationally intensive for rapid simulation. 
 To address this issue, a compact correction to the 
-wire length distribution was introduced in \cite{wahby_wld_2013}, which is used in this work to
-estimate the distribution of wire lengths in 2D and 3D ICs.
+wire length distribution was introduced in \cite{wahby_wld_2013}, which is used in this work.
 Once the wire length distribution is known, the wire pitch and number of metal layers are determined using a bottom-up wire scaling 
-technique \cite{venkatesan_performance_1999}, and a delay-optimal repeater insertion scheme 
+technique \cite{venkatesan-optimal-2001}, and a delay-optimal repeater insertion scheme 
 is used to determine the size and number of repeaters required to meet timing constraints \cite{bakoglu_optimal_1985}.
 
 The impact of surface scattering and grain boundary scattering on wire resistivity are incorporated into the wire sizing algorithm
@@ -380,7 +391,7 @@ reduces the need for power-hungry repeaters.
 
 In order to investigate the potential of ultra low-k (ULK) ILD materials, 
 a 32nm Sandy Bridge Core i7 was simulated with a range of different
-ILD permittivities, ranging from 3.9 (Silicon Dioxide), all the way down to 1 (vacuum).
+ILD permittivities, ranging from 3.9 (silicon dioxide), all the way down to 1 (vacuum).
 Figure \ref{f-2d-materials-num-levels-ild} shows that the number of metal layers required to fully route
 the Sandy Bridge processing core can be reduced from 8 to 6 if the relative dielectric constant
 of the ILD material can be brought below 1.3.
@@ -519,7 +530,7 @@ the simultaneous switching noise to below 15\% of the nominal supply voltage. Th
 For two-tier stacks only a slight increase in power TSVs is observed over the 2D case, but
 the eight-tier implementation requires roughly an order of magnitude
 more power connections than the 2D design. The ILD permittivity has a strong impact on the power delivery requirements,
-as it has an outsized impact on the power consumption of the on-chip communication network. The thickness 
+as it directly affects the power consumption of the on-chip communication network. The thickness 
 of the 3DIC logic tiers is not a limiting factor for 2-tier designs, but 4- and 8-tier designs can realize nearly as much benefit
 from die thinning as from ULK dielectrics.
 
@@ -527,9 +538,8 @@ from die thinning as from ULK dielectrics.
 	\centering
 	\includegraphics[width=3.5in]{Figures/sb3d_psn_vs_ild_and_tiers_vacuum_vs_sio2_3.png}
 	\caption{
-		Impact of interlayer dielectric material, substrate thickness, and degree of 3D 
-		integration on power delivery TSV requirements in a hypothetical 3D Sandy Bridge CPU core.
-		In the single-tier (2D) case the required number of power pads is displayed.
+		Impact of interlayer dielectric material, substrate thickness, and 3D 
+		integration on power pad/TSV requirements in a 3D Sandy Bridge CPU core.
 	}
 	\label{f-3d-psn-ild-tiers}
 \end{figure}
@@ -537,7 +547,6 @@ from die thinning as from ULK dielectrics.
 Another method to reduce power supply noise is to integrate decoupling capacitors onto the die
 to compensate for the inductance of the power delivery network. While this practice can improve
 power quality, it also sets up a tradeoff between utilizing die area for logic and power delivery.
-
 In order to explore this tradeoff, the 32nm Sandy Bridge test case was simulated in several 2D and 3D configurations with
 varying amounts of silicon area allocated for chip- or interposer-level 
 decoupling capacitors. The power TSV diameter is assumed to be 10 ${\mu}m$ and the thickness of each die in the 3D stack is assumed to be
@@ -617,14 +626,13 @@ factors which could limit the maximum operating frequency of the chip, such as c
 the power consumed by the cooling solution is ignored in both cases, in order to isolate intrinsic die-level
 effects from the details of the particular heat sink used.}
 
-
-
-
-
 As can be seen in \cref{f-sb3d-freq-vs-tiers}, the maximum frequency decreases steadily as the CPU is folded across
 more tiers, as the increased power density (\cref{f-sb-power-vs-tiers-ild}) of the
 system increases the strain on the cooling system.
-\changed{In all cases, the microfluidically-cooled cores run faster than the air-cooled cores.}
+\changed{In all cases, the microfluidically-cooled cores can run faster than the air-cooled cores.}
+\changed{It is important to note that the configuration considered here represents the most thermally challenging 3D integration scenario:
+the stacking of high performance logic. With a more aggressive cooling solution the logic core considered here can be folded over up
+to four tiers while still achieving performance parity with an air-cooled 2D implementation.}
 
 
 
@@ -633,7 +641,7 @@ system increases the strain on the cooling system.
 %% ========= CONCLUSION ============
 %% =================================
 
-\section{Conclusion}
+\section{Conclusions}
 A virtual integration platform for 2D and 3D IC pathfinding was developed and used to examine the impacts of 
 advanced technologies on system performance. The virtual platform incorporates 
 models for signal delivery, power supply noise, and thermal performance in 2D and 3D ICs,
@@ -641,12 +649,14 @@ and was validated against wire pitch and power consumption data for recent comme
 The impacts of low-k dielectrics, and 3D integration on the performance, power consumption,
 and power delivery requirements of a 32nm processing core were examined, and a hypothetical 7nm version of the same processor
 was simulated to determine the impact of alternate wire materials on the number of metal levels required for signal routing
-at advanced process nodes. \changed{The results suggest that 3D systems should exhibit greater energy efficiency
-than their 2D counterparts, though high performance 3D logic cores will require more aggressive cooling solutions to achieve
-performance parity. Highly-stacked high performance 3DICs were shown to require very large numbers of TSVs for power delivery,
+at advanced process nodes. \changed{
+Highly-stacked high performance 3DICs were shown to require large numbers of power delivery TSVs,
 due in part to the increased parasitic TSV resistance and inductance introduced into the power delivery network, as well as the
-increased power density of the 3D cores. The use of highly-thinned dice as well as low-k interlayer dielectrics were shown to
-be an effective methods for reducing the overall power consumption of high performance 3DICs.}
+increased power density of the 3D cores. The use of highly-thinned dice and low-k dielectrics were shown to
+be an effective methods for reducing the power consumption and power TSV requirements of high performance 3DICs.
+The results suggest that 3D systems should exhibit greater energy efficiency
+than their 2D counterparts, though high performance 3D logic cores will require more aggressive cooling solutions to achieve
+performance parity. }
 
 
 
@@ -734,10 +744,9 @@ He is currently an Associate Professor and the
 ON Semiconductor Junior Professor with the School
 of Electrical and Computer Engineering at Georgia
 Tech.
-Dr. Bakir is an Editor of the IEEE TRANSACTIONS
-ON ELECTRON DEVICES, an Associate Editor of the IEEE TRANSACTIONS
-ON COMPONENTS, PACKAGING AND MANUFACTURING TECHNOLOGY, and
-was a Guest Editor of the June 2011 special issue of the IEEE Journal
+Dr. Bakir is an Editor of the IEEE Transactions on Electron Devices, 
+an Associate Editor of the IEEE Transactions on Components, Packaging, and Manufacturing Technology,
+and was a Guest Editor of the June 2011 special issue of the IEEE Journal
 of Selected Topics in Quantum Electronics. He is also a member of the
 International Technology Roadmap for Semiconductors’ technical working
 group for assembly and packaging. He was a recipient of the 2013 Intel
