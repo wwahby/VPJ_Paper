@@ -57,7 +57,7 @@
 %% paper title
 %% can use linebreaks \\ within to get better formatting as desired
 %\title{\changed{Compact Modeling of Trends in 2D and 3DIC Power, Signal, and Thermal Performance}}
-\title{\changed{3DVP: A CAD Tool for Rapid Simulation of Trends in 3DIC Performance and Power Consumption}}
+\title{\changed{A Simulation Tool for Rapid Investigation of Trends in 3DIC Performance and Power Consumption}}
 %\title{\changed{3DVP: A Compact Tool for Investigation of Trends in 3DIC Performance and Power Consumption}}
 \author{William~Wahby,~\IEEEmembership{Student~Member,~IEEE}, Li~Zheng, Yang~Zhang,~\IEEEmembership{Student~Member,~IEEE}, and Muhannad~Bakir,~\IEEEmembership{Senior~Member,~IEEE}%
 	\thanks{Original manuscript received July 11, 2015. \changed{Revised manuscript received November ??, 2015.} This work was supported in part by the SRC GRC project 2254.001, and by the SRC Educational Alliance Intel Foundation Fellowship}%
@@ -75,7 +75,7 @@
 %% ========== ABSTRACT =============
 %% =================================
 \begin{abstract}
-In order to compare the costs and benefits of 2D and 3DIC technologies, an compact simulation framework for 3DIC system evaluation and
+In order to compare the costs and benefits of 2D and 3DIC technologies, a compact simulation tool for 3DIC system evaluation and
 design space exploration is developed. The simulator is implemented in MATLAB, and is composed of several
 modules, including a compact 3DIC wire length distribution,
 a wire pitch and repeater insertion module, a 2D and 3DIC power supply noise
@@ -123,7 +123,7 @@ might have advantages over a 2D system, all of these factors must be modeled sim
 \changed{Performing these coupled simulations with high fidelity is computationally intensive, however, rendering
 thorough exploration of the 3DIC design space challenging.}
 \changed{Compact tools have been developed to estimate 2DIC performance \cite{venkatesan-optimal-2001,sekar_intsim_2007}, but
-no analog exists for 3DICs. Additionally, the 2D tools do not model power delivery or heat extraction, 
+no analog exists for 3DICs. Additionally, the existing 2D tools do not model power delivery or heat extraction, 
 which are likely to be challenges for 3DICs.}
 
 
@@ -136,7 +136,7 @@ which are likely to be challenges for 3DICs.}
 %to guide more precise investigations into the details of 3DIC physical design.
 
 \changed{The novel contribution of this work is the development of a compact tool capable of rapidly simulating the
-properties of 3DIC on-chip signal and power delivery networks while properly accounting for the impact of TSV area.
+properties of 3DIC on-chip signal and power delivery networks.
 The simulator estimates the power consumption, simultaneous switching noise, and thermal profile of 2DICs and 3DICs, 
 and enables the investigation of trends in performance and power consumption
 as materials, devices, and integration methodologies are varied.
@@ -146,14 +146,14 @@ The simulator is intended to help answer what-if questions
 and to guide more precise investigations
 into the details of 3DIC physical design.}
 
-\changed{This paper first presents the modeling details, followed by validation and predictions. 
-In \cref{s-virtual-platform} the details of the models used and their interactions are presented.
-In \cref{s-validation} the simulation framework is benchmarked against published
-wire pitch and TDP data for several commercial processors.}
-The simulation tool is used to investigate the impacts of advanced
-technologies on a 32nm Sandy Bridge i7 processing core in \cref{s-2d-investigations,s-3d-investigations}.
-Specifically, the impacts of interlayer dielectric material, wire material, and 3D integration on the power consumption,
-power supply noise, and number of metal layers required for routing are investigated.
+\changed{The organization of this paper is as follows: 
+in \cref{s-virtual-platform} the details of the models used and their interactions are presented;
+in \cref{s-validation} the simulation framework is benchmarked against published
+wire pitch and TDP data for several commercial processors;
+in \cref{s-2d-investigations,s-3d-investigations} the simulation tool is used to investigate the impacts of advanced
+technologies on a 32nm Sandy Bridge i7 processing core.}
+Specifically, the impacts of the interlayer dielectric, wire material, and 3D stacksing on the power consumption,
+power supply noise, and metal layers required for routing are investigated.
 
 \section{Simulation Framework} \label{s-virtual-platform}
 The simulation platform consists of the following:
@@ -175,7 +175,7 @@ The overall execution flow is shown in \cref{f-vp-flowchart}.
 wire lengths in the system is estimated, which is in turn used to determine the number of wiring tiers required for signal routing, 
 the wire pitch on each tier, and the number of repeaters needed to meet the delay constraint.}
 \changed{
-The system is treated as a homogeneous logic block.
+In order to model the on-chip interconnect properties, the system is treated as a homogeneous logic block.
 This assumption is commonly used with stochastic wiring models to enable rapid estimation of the 
 wire parameters without a priori knowledge about the design specifics, at the cost of some 
 loss of insight into fine-grained design details \cite{davis_stochastic_1998,joyner_impact_2001,sekar_intsim_2007}.
@@ -257,9 +257,21 @@ The metal grain size is approximated as the smallest dimension of each wire.
 
 \subsection{Power supply noise modeling}
 Power supply noise must be suppressed to ensure reliable system operation, but power delivery in 3DICs is 
-complicated by the limited area available for routing power interconnects between tiers.
-We use the 3DIC power supply network models developed in \cite{zheng_novel_2014}
-to determine the power supply noise in the 3D stack and the number of power delivery TSVs.
+complicated by the limited area available for routing power interconnects between tiers and by the additional
+parasitic resistance and inductance of the TSVs used for power delivery. In order to determine the maximum allowable
+TSV diameter, the number and size of the power delivery TSVs must be estimated.
+%We use the analytic 3DIC power supply network models developed in \cite{zheng_novel_2014}
+%to determine the simultaneous switching noise in the 3D stack and the number of power delivery TSVs.
+%\changed{The periodicity of the power grid is used to extrapolate the frequency-domain behavior of a single power 
+%delivery unit cell to determine the worst-case simultaneous switching noise in the system.}
+%
+\changed{The analytic 3DIC power supply model developed in \cite{zheng_novel_2014} is used to estimate the simultaneous switching noise (SSN)
+in the 3D stack as a function of the number and size of the power delivery TSVs. The model uses the periodicity of the
+power grid to extrapolate the worst-case SSN in the system from the detailed frequency-domain behavior of 
+a single power delivery unit cell. Power is assumed to be delivered via a regular rectangular array of power and ground pads or TSVs
+connected by planar power delivery wires. An inverse laplace transform is used to convert the frequency response of the power delivery network
+into the temporal response, from which the worst-case noise can be easily extracted \cite{huang_power_2012}.}
+
 
 %% =================================
 %% ========= THERMAL ============
@@ -275,13 +287,13 @@ with a non-conformal meshing strategy described in \cite{zhang-thermal-2014}.}
 	\centering
 	\includegraphics[width=1.75in]{Figures/thermal_config_no_bc_4.png}
 	\caption{
-		\changed{The geometry used in the virtual platform thermal module. TSVs are individually meshed, in order to better capture the impact
+		\changed{The geometry used in the thermal module. TSVs are individually meshed, in order to better capture the impact
 		of 3D heat transport.}
 	}
 	\label{f-thermal-config}
 \end{figure}
 
-\changed{The thermal configuration considered in the virtual platform is shown in \cref{f-thermal-config}. One or more dice are assumed
+\changed{The thermal configuration considered in the simulation tool is shown in \cref{f-thermal-config}. One or more dice are assumed
 to be stacked vertically atop an interposer (which may be either a conventional organic package substrate, or a silicon or glass
 interposer). Each die is separated into three regions: 1) the bulk silicon, 2) the BEOL, which is modeled as an effective material composed of the
 volume-weighted average of the thermal conductivities of the wiring material and the interlayer dielectric, and 3) the underfill material
@@ -302,7 +314,7 @@ error of 2.7\%.
 %% =================================
 
 \section{Validation} \label{s-validation}
-The virtual platform was validated by comparing its predictions against published data for Intel processors ranging from the 65nm node
+The simulator was validated by comparing its predictions against published data for Intel processors ranging from the 65nm node
 to the 32nm node
 \cite{bai_65nm_process_2004,sakran_65nm_merom_arch_2007,mistry_45nm_process_2007,varghese_45nm_penryn_arch_2007,kumar_45nm_nehalem_arch_2009,packan_32nm_process_2009,kurd_32nm_westmere_arch_2010,yuffe_32nm_sandy_arch_2011}.
 For each test case, the chip area, number of logic transistors, number of memory transistors, and size and shape
@@ -314,7 +326,8 @@ The pitch and number of metal layers used for the overall design were then set b
 the greatest number of wiring tiers (typically the CPU core). This information, along with the geometry and power requirements
 of each block was then used by the thermal module to determine the maximum temperature in the system.}
 
-\begin{table}
+
+\begin{table}[tb]
 	\centering
 	%\begin{tabular}{|c|c|c|c|c|c|}
 	\caption{Comparison to actual data }
@@ -340,18 +353,18 @@ of each block was then used by the thermal module to determine the maximum tempe
 \end{table}
 
 The expected wire pitch, number of metal layers, power consumption, and
-maximum junction temperature generated by the virtual platform have been compared in \cref{t-validation}. 
-\changed{With the exception of the Core i7 680 test case, the virtual platform shows reasonable agreement with the
+maximum junction temperature generated by the simulator have been compared in \cref{t-validation}. 
+\changed{With the exception of the Core i7 680 test case, the tool shows reasonable agreement with the
 published data for these processors. The 45nm and 32nm test cases all have a total of 9 metal layers, but in all cases
 the wires on the top layer are sized very large and used for power and clock delivery, rather than signal routing.
 Since the interconnect estimation
 module is used estimate the size and pitch of signal wires only, the top metal layer in these designs is not counted
 for the purpose of signal wire pitch validation. Instead, the upper wire tier is modeled in the power delivery simulation
-module of the virtual platform, but without data on the
+module of the simulator, but without data on the
 power noise margin and the number of power and ground pads used in these designs, detailed validation of the power
 delivery module is not possible for these test cases.
-In addition to the total number of metal levels, the simulator
-can accurately predict the wire pitch in each routing tier, as shown in \cref{f-sb-wire-pitch}.}
+In addition to the number of metal levels, the simulator accurately predicts
+the wire pitch in each routing tier, as shown in \cref{f-sb-wire-pitch}.}
 
 \begin{figure}[tb]
 	\centering
@@ -366,10 +379,10 @@ can accurately predict the wire pitch in each routing tier, as shown in \cref{f-
 and the overall power consumption for the Core i7 680 test case; this error could be due to the fact that the
 Core i7 680 is the only design implemented as a multi-chip module (MCM), with a 32nm CPU die 
 integrated with a 45nm GPU die in the same package.}
-\changed{The simulator currently lacks the ability to estimate the power required for inter-block communication in
-heterogeneous systems. While this
-lack will affect the power estimates for all test cases, it is likely that the power required for communication between the two
-separate dice in the Core i7 680 is much larger than the power requirements for communication between GPUs and logic cores
+\changed{The simulator currently does not estimate the power required for inter-block communication in
+heterogeneous systems. While this will affect the power estimates for all test cases, 
+the power required for communication between the two
+separate dice in the Core i7 680 is likely much larger than the power requirements for communication between GPUs and logic cores
 integrated on the same die.}
 
 
@@ -378,7 +391,7 @@ in its ability to consider many different effects very rapidly (a design scenari
 seconds on a consumer-grade laptop computer), enabling detailed investigation of the relative performance
 of different technologies on a particular design. Overall, this level of accuracy is sufficient for the investigation
 of power and performance trends in 2D and 3DICs.
-In the subsequent sections the virtual platform is used in this manner
+In the subsequent sections the simulator is used in this manner
 to investigate the impacts of material, technology, and packaging innovations on the power consumption
 and performance of 2D and 3DICs.}
 
@@ -426,20 +439,32 @@ potentially impacting signal performance, power consumption,
 and the number of metal layers required to fully route a design \cite{adelmann_alternative_2014}. % Removed sankaran_exploring_2014
 It is likely that only the lowest metal levels would use alternate materials \cite{oates-electromigration-2015}. 
 
-To investigate the potential impact of alternate metals on routing,
-a hypothetical 7nm Sandy Bridge CPU test case was constructed by scaling the gate pitch, 
+To investigate the impact of alternate metals on routing,
+a 7nm Sandy Bridge CPU test case was constructed by scaling the gate pitch, 
 minimum wire pitch, transistor size, and all other lengths in the 32nm Sandy Bridge
 by a factor of 4.57X (32/7). Two 7nm test cases were considered: \textit{7nm A}, in which all wires are composed of an
 alternate material, and \textit{7nm B}, in which only wires thinner than 25nm are replaced by the alternate material.
 The bulk resistivity of the alternate wiring material 
 in both the 32nm and 7nm test cases was swept from 10 $\Omega$nm (slightly lower than bulk Ag), to 60 $\Omega$nm 
-(slightly higher than bulk W). For simplicity, the specularity and reflection
-parameters of the alternate wiring material are not modified.
+(slightly higher than bulk W).
+%For simplicity, the specularity and reflection
+%parameters of the alternate material are not modified.
 As can be seen in \cref{f-2d-materials-num-levels-rho-7nm}, higher resistivity metals can significantly
 increase the number of metal levels required for signal routing, but this effect can
 be mitigated by restricting the use of alternate metals to the lowest wiring tiers.
-Since the greatest numbers of wires are routed in the lowest metal tiers, small changes to their dimensions
-can have a large impact on the wiring stack.
+Since the greatest numbers of wires are routed in the lowest tiers, small changes to their dimensions
+can have large impacts on the wiring stack.
+
+\begin{figure}[tb]
+	\centering
+	\includegraphics[width=3.5in]{Figures/sb2d_32nm_vs_7nm_alt_metal_comparison.png}
+	\caption{
+		Impact of wire resistivity on the number of metal layers required to route the wires in a Sandy Bridge CPU. Three cases are
+		considered: a) a 32nm Sandy Bridge core; b) 7nm A, a hypothetical
+		7nm Sandy Bridge core; and c) 7nm B, in which only wires with width below 25nm are modified.
+	}
+	\label{f-2d-materials-num-levels-rho-7nm}
+\end{figure}
 
 
 
@@ -454,20 +479,7 @@ Unless otherwise noted, we assume a TSV aspect ratio of 20:1, and require that t
 less than 10\% of the total die area. Typically, 3DIC designs limit the TSV area to 1\% or less
 to minimize the cannibalization of active area, but we have relaxed that limit here for illustrative purposes.
 In order to examine the impacts of 3D integration, a single CPU core from a 32nm Sandy Bridge Core i7 2700k
-is examined throughout this section.
-
-\begin{figure}[tb]
-	\centering
-	\includegraphics[width=3.5in]{Figures/sb2d_32nm_vs_7nm_alt_metal_comparison.png}
-	\caption{
-		Impact of wire resistivity on the number of metal layers required to route the wires in a Sandy Bridge CPU. Three cases are
-		considered: a) a 32nm Sandy Bridge core; b) 7nm A, a hypothetical
-		7nm Sandy Bridge core; and c) 7nm B, in which only wires with width below 25nm are modified.
-	}
-	\label{f-2d-materials-num-levels-rho-7nm}
-\end{figure}
-
-In order to investigate the ultimate limits of 3D integration, we consider a scenario in which logic gates and blocks can be placed on
+is examined throughout this section. We consider a scenario in which logic gates and blocks can be placed on
 any tier, and in which TSVs are used as point to point interconnects.
 The core is assumed to be partitioned into $N$ equal pieces, which are then stacked vertically.
 
@@ -544,6 +556,16 @@ from die thinning as from ULK dielectrics.
 	\label{f-3d-psn-ild-tiers}
 \end{figure}
 
+\begin{figure}[tb]
+	\centering
+	\includegraphics[width=3.5in]{Figures/sb3d_psn_tiers_and_decap__substrate_10um__tsvs_10um_3.png}
+	\caption{
+		Power TSV requirements for a single Sandy Bridge core as a function of 3D configuration and
+		area allocated for decoupling capacitors.
+		}
+	\label{f-sb-psn-decap-10um}
+\end{figure}
+
 Another method to reduce power supply noise is to integrate decoupling capacitors onto the die
 to compensate for the inductance of the power delivery network. While this practice can improve
 power quality, it also sets up a tradeoff between utilizing die area for logic and power delivery.
@@ -555,21 +577,11 @@ alternate integration schemes in which wafers are bonded and subsequently thinne
 without the need for modified wafer handling processes \cite{patti-three-dimensional-2006}}. Alternately, monolithic 3DIC fabrication
 techniques could enable designs with extremely small intertier distances \cite{vinet-monolithic-2014}.
 As can be seen in \cref{f-sb-psn-decap-10um}, increasing the decoupling
-capacitance can significantly reduce the number of pads or TSVs required for power delivery.
-Small area allocations can likely be achieved
-with on-chip decoupling capacitors, but integrating high decoupling capacitance densities could be challenging. 
+capacitance can significantly reduce the number of power pads or TSVs, but integrating high decoupling capacitance densities could be challenging. 
 Even with the use of decoupling capacitors, a lower bound on power TSV number is set by
-the need to keep the current density carried by each TSV low enough to avoid electromigration effects.
+the need to keep the current density carried by each TSV low enough to avoid electromigration.
 
-\begin{figure}[tb]
-	\centering
-	\includegraphics[width=3.5in]{Figures/sb3d_psn_tiers_and_decap__substrate_10um__tsvs_10um_3.png}
-	\caption{
-		Power TSV requirements for a single Sandy Bridge core as a function of 3D configuration and
-		area allocated for decoupling capacitors.
-		}
-	\label{f-sb-psn-decap-10um}
-\end{figure}
+
 
 
 
@@ -621,10 +633,10 @@ thermal conductivities used for the materials in the stack are presented in \cre
 
 The CPU core was simulated in each configuration to find 
 the maximum operating frequency which could be maintained while keeping the maximum temperature below 90$^\circ$C.
-\changed{In order to focus on solely the thermal aspects of 3D stacking we assumed that the system was thermally-limited, and ignored other
-factors which could limit the maximum operating frequency of the chip, such as clock distribution. Additionally,
-the power consumed by the cooling solution is ignored in both cases, in order to isolate intrinsic die-level
-effects from the details of the particular heat sink used.}
+\changed{In order to focus on the thermal aspects of 3D stacking we assumed that the system was thermally-limited, and ignored other
+factors which could limit the operating frequency of the chip, such as clock distribution. Additionally,
+the power consumed by the cooling solution is ignored, in order to isolate intrinsic die-level
+effects from the details of the heat sink.}
 
 As can be seen in \cref{f-sb3d-freq-vs-tiers}, the maximum frequency decreases steadily as the CPU is folded across
 more tiers, as the increased power density (\cref{f-sb-power-vs-tiers-ild}) of the
@@ -642,19 +654,20 @@ to four tiers while still achieving performance parity with an air-cooled 2D imp
 %% =================================
 
 \section{Conclusions}
-A virtual integration platform for 2D and 3D IC pathfinding was developed and used to examine the impacts of 
-advanced technologies on system performance. The virtual platform incorporates 
+A compact simulation tool for 2D and 3D IC pathfinding was developed and used to examine the impacts of 
+advanced technologies on system performance. The tool incorporates 
 models for signal delivery, power supply noise, and thermal performance in 2D and 3D ICs,
 and was validated against wire pitch and power consumption data for recent commercial microprocessors.
-The impacts of low-k dielectrics, and 3D integration on the performance, power consumption,
-and power delivery requirements of a 32nm processing core were examined, and a hypothetical 7nm version of the same processor
-was simulated to determine the impact of alternate wire materials on the number of metal levels required for signal routing
-at advanced process nodes. \changed{
-Highly-stacked high performance 3DICs were shown to require large numbers of power delivery TSVs,
-due in part to the increased parasitic TSV resistance and inductance introduced into the power delivery network, as well as the
-increased power density of the 3D cores. The use of highly-thinned dice and low-k dielectrics were shown to
-be an effective methods for reducing the power consumption and power TSV requirements of high performance 3DICs.
-The results suggest that 3D systems should exhibit greater energy efficiency
+%The impacts of low-k dielectrics, and 3D integration on the performance, power consumption,
+%and power delivery requirements of a 32nm processing core were examined, and a 7nm version of the same processor
+%was simulated to determine the impact of alternate wire materials on the number of metal levels required for routing
+%at advanced process nodes.
+\changed{
+The simulation results suggest that high performance 3DICs will require large numbers of power delivery TSVs,
+due to the parasitic TSV resistance and inductance introduced into the power delivery network, as well as the
+increased power density of the 3D cores. Die thinning and low-k dielectrics are expected to
+be effective tools for reducing the power consumption and power TSV requirements of high performance 3DICs.
+The results suggest that 3DICs should exhibit greater energy efficiency
 than their 2D counterparts, though high performance 3D logic cores will require more aggressive cooling solutions to achieve
 performance parity. }
 
@@ -746,19 +759,19 @@ of Electrical and Computer Engineering at Georgia
 Tech.
 Dr. Bakir is an Editor of the IEEE Transactions on Electron Devices, 
 an Associate Editor of the IEEE Transactions on Components, Packaging, and Manufacturing Technology,
+a member of the ITRS technical working group for assembly and packaging, 
 and was a Guest Editor of the June 2011 special issue of the IEEE Journal
-of Selected Topics in Quantum Electronics. He is also a member of the
-International Technology Roadmap for Semiconductors’ technical working
-group for assembly and packaging. He was a recipient of the 2013 Intel
+of Selected Topics in Quantum Electronics.
+He was a recipient of the 2013 Intel
 Early Career Faculty Honor Award, the 2012 DARPA Young Faculty Award,
 the 2011 IEEE CPMT Society Outstanding Young Engineer Award, and was
 an Invited Participant in the 2012 National Academy of Engineering Frontiers
-of Engineering Symposium. He was also a recipient of the Semiconductor
-Research Corporation’s Inventor Recognition Awards in 2002, 2005, and 2009.
+of Engineering Symposium. He was also a recipient of the SRC Inventor Recognition Awards in 2002, 2005, and 2009.
 He and his research group have received 12 conference and student paper
-awards, including one from the IEEE Custom Integrated Circuits Conference,
-five from the IEEE Electronic Components and Technology Conference, and
-three from the IEEE International Interconnect Technology Conference.
+awards.
+%, including one from the IEEE Custom Integrated Circuits Conference,
+%five from the IEEE Electronic Components and Technology Conference, and
+%three from the IEEE International Interconnect Technology Conference.
 \end{IEEEbiography}
 
 %\vspace{-0.3in}
