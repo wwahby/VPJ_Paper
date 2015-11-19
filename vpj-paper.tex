@@ -306,30 +306,6 @@ with a non-conformal meshing strategy described in \cite{zhang-thermal-2014}.}
 	\label{f-thermal-config}
 \end{figure}
 
-\begin{table}[tb]
-	\centering
-	%\begin{tabular}{|c|c|c|c|c|c|}
-	\caption{Comparison to actual data }
-	\begin{threeparttable}
-	\begin{tabular}{cccccl}
-		\hline
-						&			&	\multicolumn{2}{c}{Signal Wire Tiers}								&	TDP		&	\multicolumn{1}{c}{Predicted} \\
-		Processor		&	Node	&	Actual											&	Predicted		&	(W)		&	\multicolumn{1}{c}{Power (W)} \\
-		\hline \hline
-		E6850			&	65nm	&	8												&	8				&	65		&	60.27 \changed{(-7.3\%)}	\\
-		E8600			&	45nm	&	\changed{8}\tnote{2}							&	8				&	65		&	63.62 \changed{(-2.1\%)}	\\
-		i7 880			&	45nm	&	\changed{8}\tnote{2}							&	7				&	95		&	105.56 \changed{(11.1\%)}	\\
-		i7 680\tnote{1}	&	32nm	&	\changed{8}\tnote{2}							&	6				&	73		&	52.74 \changed{(-27.8\%)}	\\
-		i7 2700k		&	32nm	&	\changed{8}\tnote{2}							&	8				&	95		&	91.80 \changed{(-3.3\%)}	\\
-		\hline
-	\end{tabular}
-	\begin{tablenotes}
-		\item[1] Multi-chip package with 32nm CPU die and 45nm gpu/support die.
-		\item[2] Design has one additional global metal layer for power distribution.
-	\end{tablenotes}
-	\end{threeparttable}
-	\label{t-validation}	
-\end{table}
 
 \changed{The thermal configuration considered in the simulation tool is shown in \cref{f-thermal-config}. One or more dice are assumed
 to be stacked vertically atop an interposer (which may be either a conventional organic package substrate, or a silicon or glass
@@ -363,6 +339,32 @@ pitch of metal levels required for routing and the total power consumption of ea
 The pitch and number of metal layers used for the overall design were then set by the block which required
 the greatest number of wiring tiers (typically the CPU core). This information, along with the geometry and power requirements
 of each block was then used by the thermal module to determine the maximum temperature in the system.}
+
+\begin{table}[tb]
+	\centering
+	%\begin{tabular}{|c|c|c|c|c|c|}
+	\caption{Comparison to actual data }
+	\begin{threeparttable}
+	\begin{tabular}{cccccl}
+		\hline
+						&			&	\multicolumn{2}{c}{Signal Wire Tiers}								&	TDP		&	\multicolumn{1}{c}{Predicted} \\
+		Processor		&	Node	&	Actual											&	Predicted		&	(W)		&	\multicolumn{1}{c}{Power (W)} \\
+		\hline \hline
+		E6850			&	65nm	&	8												&	8				&	65		&	60.27 \changed{(-7.3\%)}	\\
+		E8600			&	45nm	&	\changed{8}\tnote{2}							&	8				&	65		&	63.62 \changed{(-2.1\%)}	\\
+		i7 880			&	45nm	&	\changed{8}\tnote{2}							&	7				&	95		&	105.56 \changed{(11.1\%)}	\\
+		i7 680\tnote{1}	&	32nm	&	\changed{8}\tnote{2}							&	6				&	73		&	52.74 \changed{(-27.8\%)}	\\
+		i7 2700k		&	32nm	&	\changed{8}\tnote{2}							&	8				&	95		&	91.80 \changed{(-3.3\%)}	\\
+		\hline
+	\end{tabular}
+	\begin{tablenotes}
+		\item[1] Multi-chip package with 32nm CPU die and 45nm gpu/support die.
+		\item[2] Design has one additional global metal layer for power distribution.
+	\end{tablenotes}
+	\end{threeparttable}
+	\label{t-validation}	
+\end{table}
+
 
 \begin{figure}[tb]
 	\centering
