@@ -165,7 +165,7 @@ The simulation platform consists of the following:
 	\item A finite difference thermal module for analyzing the thermal impacts of 3D integration
 \end{enumerate}
 
-The overall execution flow is shown in \cref{f-vp-flowchart}.
+The simulation flow is shown in \cref{f-vp-flowchart}.
 %\changed{The user first inputs high-level design parameters, including the target clock frequency,
 %estimated logic activity factor (the fraction of transistors switching on any given clock cycle), transistor size and
 %leakage parameters, wiring material, and expected die area and thickness.
@@ -175,23 +175,24 @@ The overall execution flow is shown in \cref{f-vp-flowchart}.
 wire lengths in the system is estimated, which is in turn used to determine the number of wiring tiers required for signal routing, 
 the wire pitch on each tier, and the number of repeaters needed to meet the delay constraint.}
 \changed{
-In order to model the on-chip interconnect properties, the system is treated as a homogeneous logic block.
-This assumption is commonly used with stochastic wiring models to enable rapid estimation of the 
-wire parameters without a priori knowledge about the design specifics, at the cost of some 
-loss of insight into fine-grained design details \cite{davis_stochastic_1998,joyner_impact_2001,sekar_intsim_2007}.
+In order to model the on-chip interconnects the system is modeled as a homogeneous block
+of randomly interconnected logic.
+This assumption is commonly used with stochastic wire length models for rapid estimation of on-chip interconnect properties, at the cost of
+reduced insight into fine-grained design details \cite{davis_stochastic_1998,joyner_impact_2001,sekar_intsim_2007}.
 }
-
+%
 \changed{
-In order to simulate complex heterogeneous designs, the user can input the expected parameters and position of each block
-in the system. In this case each block is modeled separately, 
+In heterogeneous systems each block is modeled separately, 
 and the results are assembled into an overall power density map of each tier in the design
 to determine the thermal profile throughout the stack. In order to better predict the
 performance of such systems, the method of \cite{zarkesh-ha_pin_1998} can be used to homogenize
-a heterogeneous system. Inter-block connections in heterogeneous designs are ignored, 
-as additional design-specific information is needed to determine their properties.
-Similarly, off-chip interconnects are ignored when simulating both homogeneous
-and heterogeneous designs, as additional design details would be needed for accurate simulation.
-}
+a heterogeneous system.}
+%\changed{
+%Inter-block connections in heterogeneous designs are ignored, 
+%as additional design-specific information is needed to determine their properties.
+%Similarly, off-chip interconnects are ignored when simulating both homogeneous
+%and heterogeneous designs, as additional design details would be needed for accurate simulation.
+%}
 
 
 
@@ -218,6 +219,18 @@ exceeds a user-defined limit, the clock frequency is reduced and the previous mo
 the maximum temperature is sufficiently reduced. As alternate means of power reduction, the logic activity factor can also be reduced
 or the wire or interlayer dielectric materials be modified.
 The final design parameters are reported once the constraints on temperature and TSV area are satisfied. }
+
+\changed{
+The key limitations of this simulation platform are linked to the assumptions used to model the on-chip interconnects. % network.
+Treating a design as a homogeneous block of randomly-interconnected logic allows
+rapid simulation of the aggregate properties of the on-chip wires,
+but limits visibility into the inner workings of the design.
+Off-chip IO and interconnections between blocks in heterogeneous systems are also not modeled, as design-specific
+information would be needed for accurate modeling. 
+These omissions lead to underestimation of the system power, and limit the range of validity of
+the simulator, but they also enable the consideration
+of a wide range of system types without detailed design information.}
+
 
 
 %% =================================
@@ -293,40 +306,6 @@ with a non-conformal meshing strategy described in \cite{zhang-thermal-2014}.}
 	\label{f-thermal-config}
 \end{figure}
 
-\changed{The thermal configuration considered in the simulation tool is shown in \cref{f-thermal-config}. One or more dice are assumed
-to be stacked vertically atop an interposer (which may be either a conventional organic package substrate, or a silicon or glass
-interposer). Each die is separated into three regions: 1) the bulk silicon, 2) the BEOL, which is modeled as an effective material composed of the
-volume-weighted average of the thermal conductivities of the wiring material and the interlayer dielectric, and 3) the underfill material
-between each die. The power dissipated by each die is applied as an excitation at the boundary between the bulk silicon and the BEOL. 
-TSVs are modeled within the bulk of any dice below the top die in the stack. Each external boundary of the stack is
-modeled with a convective boundary condition; boundaries internal to the package are typically given a low heat transfer coefficient
-of $5$ mW/m$^2$K, while the top and bottom surfaces are given higher values to reflect the cooling method under consideration.}
-
-\changed{The accuracy of this finite difference module was assessed in \cite{zhang-thermal-2014},} in which the performance of the finite difference scheme
-was compared against finite element ANSYS models of the same structure. The finite difference model was found to match the ANSYS results with a maximum
-error of 2.7\%.
-
-
-
-
-%% =================================
-%% ========= VALIDATION ============
-%% =================================
-
-\section{Validation} \label{s-validation}
-The simulator was validated by comparing its predictions against published data for Intel processors ranging from the 65nm node
-to the 32nm node
-\cite{bai_65nm_process_2004,sakran_65nm_merom_arch_2007,mistry_45nm_process_2007,varghese_45nm_penryn_arch_2007,kumar_45nm_nehalem_arch_2009,packan_32nm_process_2009,kurd_32nm_westmere_arch_2010,yuffe_32nm_sandy_arch_2011}.
-For each test case, the chip area, number of logic transistors, number of memory transistors, and size and shape
-of the cores and memory blocks were gathered from published data. Logic cores were simulated with a Rent exponent of $0.6$,
-while memory cores used a value of $0.4$, \changed{and GPUs were simulated with a Rent exponent of $0.5$} \cite{christie_interpretation_2000}.
-\changed{Each block was simulated separately to determine the number and
-pitch of metal levels required for routing and the total power consumption of each block.
-The pitch and number of metal layers used for the overall design were then set by the block which required
-the greatest number of wiring tiers (typically the CPU core). This information, along with the geometry and power requirements
-of each block was then used by the thermal module to determine the maximum temperature in the system.}
-
-
 \begin{table}[tb]
 	\centering
 	%\begin{tabular}{|c|c|c|c|c|c|}
@@ -352,6 +331,49 @@ of each block was then used by the thermal module to determine the maximum tempe
 	\label{t-validation}	
 \end{table}
 
+\changed{The thermal configuration considered in the simulation tool is shown in \cref{f-thermal-config}. One or more dice are assumed
+to be stacked vertically atop an interposer (which may be either a conventional organic package substrate, or a silicon or glass
+interposer). Each die is separated into three regions: 1) the bulk silicon, 2) the BEOL, which is modeled as the
+volume-weighted average of the thermal conductivities of the wiring material and the interlayer dielectric, and 3) the underfill material
+between each die. The power dissipated by each die is applied as an excitation at the boundary between the bulk silicon and the BEOL. 
+TSVs are modeled within the bulk of any dice below the top die in the stack. Each external boundary is
+modeled with a convective boundary condition; within-package boundaries are typically given a low heat transfer coefficient
+of $5$ mW/m$^2$K, while the top and bottom surfaces are given higher values to reflect the cooling method used.}
+
+\changed{The accuracy of this finite difference module was assessed in \cite{zhang-thermal-2014},} in which the performance of the finite difference scheme
+was compared against finite element ANSYS models of the same structure. The finite difference model was found to match the ANSYS results with a maximum
+error of 2.7\%.
+
+
+
+
+%% =================================
+%% ========= VALIDATION ============
+%% =================================
+
+\section{Validation} \label{s-validation}
+The simulator was validated by comparing its predictions against published data for Intel processors ranging from the 65nm node
+to the 32nm node
+\cite{bai_65nm_process_2004,sakran_65nm_merom_arch_2007,mistry_45nm_process_2007,varghese_45nm_penryn_arch_2007,kumar_45nm_nehalem_arch_2009,packan_32nm_process_2009,kurd_32nm_westmere_arch_2010,yuffe_32nm_sandy_arch_2011}.
+For each test case, the chip area, number of logic transistors, number of memory transistors, and size and shape
+of the cores and memory blocks were gathered from published data. Logic cores were simulated with a Rent exponent of $0.6$,
+while memory cores used a value of $0.4$, \changed{and GPUs were simulated with a Rent exponent of $0.5$} \cite{christie_interpretation_2000}.
+\changed{Each block was simulated separately to determine the number and
+pitch of metal levels required for routing and the total power consumption of each block.
+The pitch and number of metal layers used for the overall design were then set by the block which required
+the greatest number of wiring tiers (typically the CPU core). This information, along with the geometry and power requirements
+of each block was then used by the thermal module to determine the maximum temperature in the system.}
+
+\begin{figure}[tb]
+	\centering
+	\includegraphics[width=3.5in]{Figures/sb_wire_pitch_2.png}
+	\caption{
+		Actual and expected wire pitch in a Core i7 2700k processor.
+	}
+	\label{f-sb-wire-pitch}
+\end{figure}
+
+
 The expected wire pitch, number of metal layers, power consumption, and
 maximum junction temperature generated by the simulator have been compared in \cref{t-validation}. 
 \changed{With the exception of the Core i7 680 test case, the tool shows reasonable agreement with the
@@ -366,14 +388,7 @@ delivery module is not possible for these test cases.
 In addition to the number of metal levels, the simulator accurately predicts
 the wire pitch in each routing tier, as shown in \cref{f-sb-wire-pitch}.}
 
-\begin{figure}[tb]
-	\centering
-	\includegraphics[width=3.5in]{Figures/sb_wire_pitch_2.png}
-	\caption{
-		Actual and expected wire pitch in a Core i7 2700k processor.
-	}
-	\label{f-sb-wire-pitch}
-\end{figure}
+
 
 \changed{The simulator underestimates both the number of wiring tiers
 and the overall power consumption for the Core i7 680 test case; this error could be due to the fact that the
@@ -388,7 +403,7 @@ integrated on the same die.}
 
 \changed{While the worst-case error in these benchmarks is relatively high ($27.8\%$), the value of this simulation framework lies
 in its ability to consider many different effects very rapidly (a design scenario can be evaluated in several
-seconds on a consumer-grade laptop computer), enabling detailed investigation of the relative performance
+seconds on a laptop computer), enabling investigation of the relative performance
 of different technologies on a particular design. Overall, this level of accuracy is sufficient for the investigation
 of power and performance trends in 2D and 3DICs.
 In the subsequent sections the simulator is used in this manner
@@ -497,6 +512,14 @@ energy efficiency of the system, as can be seen in \cref{f-sb-comm-power-fractio
 	\label{f-sb-power-vs-tiers-ild}
 \end{figure}
 
+\begin{figure}[tb]
+	\centering
+	\includegraphics[width=3.5in]{Figures/sb3d_comm_power_fraction_4.png}
+	\caption{Fraction of power consumed for on-chip communication as a function of 3D configuration and operating frequency.}
+	\label{f-sb-comm-power-fraction}
+\end{figure}
+
+
 In order to fully route a 3DIC, space must be allocated on each tier for TSVs. Since TSVs consume space
 that could otherwise be used for logic, it is desirable to minimize the fraction of chip area 
 consumed by TSVs. TSV diameter can be reduced by either increasing the TSV aspect ratio or by die thinning.
@@ -507,13 +530,6 @@ TSVs are typically limited to diameters of 5-10${\mu}m$ and aspect ratios betwee
 The impact of die thickness on 3DIC power consumption is examined in \cref{f-sb-wire-power-thickness}.
 In order to realize the greatest possible power reduction from 3D integration, the active layers should be
 as thin as possible, to minimize the distance that signals must travel when they are routed between tiers.
-
-\begin{figure}[tb]
-	\centering
-	\includegraphics[width=3.5in]{Figures/sb3d_comm_power_fraction_4.png}
-	\caption{Fraction of power consumed for on-chip communication as a function of 3D configuration and operating frequency.}
-	\label{f-sb-comm-power-fraction}
-\end{figure}
 
 \begin{figure}[tb]
 	\centering
@@ -528,12 +544,11 @@ as thin as possible, to minimize the distance that signals must travel when they
 Power delivery in 3DICs is challenging, as a high performance 3DIC may have a significantly
 higher areal power density than an equivalent 2D chip, while simultaneously having less space available for
 routing power delivery resources. Additionally, power must be delivered to each tier
-through TSVs, introducing additional parasitic resistance and inductance into the wiring network.
-
+through TSVs, increasing the parasitic resistance and inductance of the power delivery network.
 The number of power connections required by each tier is determined by the power draw and power density 
 of the system,
 which depends upon the dielectric properties and the substrate thickness (for 3DICs).
-Both 2D and 3D systems benefit from the development of ULK interlayer dielectrics, and 
+Both 2D and 3D systems benefit from the use of ULK interlayer dielectrics, and 
 the use of thin substrates in 3D configurations can further reduce the demands on the power supply network.
 
 In order to explore these effects, the Sandy Bridge test case was simulated with several substrate thicknesses and 
@@ -569,15 +584,14 @@ from die thinning as from ULK dielectrics.
 Another method to reduce power supply noise is to integrate decoupling capacitors onto the die
 to compensate for the inductance of the power delivery network. While this practice can improve
 power quality, it also sets up a tradeoff between utilizing die area for logic and power delivery.
-In order to explore this tradeoff, the 32nm Sandy Bridge test case was simulated in several 2D and 3D configurations with
-varying amounts of silicon area allocated for chip- or interposer-level 
-decoupling capacitors. The power TSV diameter is assumed to be 10 ${\mu}m$ and the thickness of each die in the 3D stack is assumed to be
-10 ${\mu}m$ \changed{to investigate the potential of extreme die thinning. While processing and assembling thinned wafers can be challenging,
+To explore this tradeoff, the 32nm Sandy Bridge test case was simulated in 2D and 3D configurations with
+varying amounts of silicon area allocated for decoupling capacitors. The power TSV diameter is assumed to be 10 ${\mu}m$ and the thickness of each die in the 3D stack is assumed to be
+10 ${\mu}m$ \changed{to investigate the potential of extreme die thinning. While handling thinned wafers can be challenging,
 alternate integration schemes in which wafers are bonded and subsequently thinned could enable the stacking of such thin layers
-without the need for modified wafer handling processes \cite{patti-three-dimensional-2006}}. Alternately, monolithic 3DIC fabrication
-techniques could enable designs with extremely small intertier distances \cite{vinet-monolithic-2014}.
+without the need for modified wafer handling processes \cite{patti-three-dimensional-2006}. Alternately, monolithic 3DIC fabrication
+techniques could enable designs with extremely small intertier distances \cite{vinet-monolithic-2014}.}
 As can be seen in \cref{f-sb-psn-decap-10um}, increasing the decoupling
-capacitance can significantly reduce the number of power pads or TSVs, but integrating high decoupling capacitance densities could be challenging. 
+capacitance can significantly reduce the number of power pads or TSVs, but achieving high decoupling capacitance densities could be challenging. 
 Even with the use of decoupling capacitors, a lower bound on power TSV number is set by
 the need to keep the current density carried by each TSV low enough to avoid electromigration.
 
