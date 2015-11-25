@@ -41,6 +41,8 @@
 \usepackage{xcolor} % Use this for different colors -- useful for indicating what's changed since last review round
 \newcommand{\changed}[1]{\textcolor{red}{#1}}
 \renewcommand{\changed}[1]{#1} %Uncomment this to get rid of the red stuff
+\newcommand{\rechanged}[1]{\textcolor{red}{#1}}
+\renewcommand{\rechanged}[1]{#1} %Uncomment this to get rid of the red stuff
 
 %% correct bad hyphenation here
 \hyphenation{op-tical net-works semi-conduc-tor}
@@ -175,7 +177,7 @@ The simulation flow is shown in \cref{f-vp-flowchart}.
 wire lengths in the system is estimated, which is in turn used to determine the number of wiring tiers required for signal routing, 
 the wire pitch on each tier, and the number of repeaters needed to meet the delay constraint.}
 \changed{
-In order to model the on-chip interconnects the system is modeled as a homogeneous block
+In order to model the on-chip interconnects in a compact manner, the system is modeled as a homogeneous block
 of randomly interconnected logic.
 This assumption is commonly used with stochastic wire length models for rapid estimation of on-chip interconnect properties, at the cost of
 reduced insight into fine-grained design details \cite{davis_stochastic_1998,joyner_impact_2001,sekar_intsim_2007}.
@@ -199,8 +201,8 @@ a heterogeneous system.}
 \changed{Once the on-chip interconnect parameters are known, the on-chip interconnect power consumption can be estimated.
 The transistor dynamic and leakage power is also calculated to determine the overall power requirements for the design.
 The total power consumption is used in conjunction with the TSV and package pin resistance and inductance
-to estimate the simultaneous switching noise in the power delivery network. Additional TSVs (for 3D designs)
-or pads (for 2D designs) are inserted until the simultaneous switching noise drops to acceptable levels.
+to estimate the simultaneous switching noise in the power delivery network. Additional \rechanged{power pads and TSVs}
+are inserted until the simultaneous switching noise drops to acceptable levels.
 At this point the tool checks that the total TSV area does not exceed a user-specified limit; 
 if TSV demand outstrips available area, the TSV diameter is reduced and the interconnect and power modules are rerun.}
 
@@ -220,7 +222,7 @@ the maximum temperature is sufficiently reduced. As alternate means of power red
 or the wire or interlayer dielectric materials be modified.
 The final design parameters are reported once the constraints on temperature and TSV area are satisfied. }
 
-\changed{
+\rechanged{
 The key limitations of this simulation platform are linked to the assumptions used to model the on-chip interconnects. % network.
 Treating a design as a homogeneous block of randomly-interconnected logic allows
 rapid simulation of the aggregate properties of the on-chip wires,
@@ -403,16 +405,29 @@ separate dice in the Core i7 680 is likely much larger than the power requiremen
 integrated on the same die.}
 
 
-\changed{While the worst-case error in these benchmarks is relatively high ($27.8\%$), 
-the typical error is much lower.
+%\changed{
+%The value of this simulation platform lies
+%in its ability to consider many different effects very rapidly 
+%(a design scenario can be evaluated in several seconds on a laptop computer), 
+%enabling the use of this tool for the investigation of the relative performance
+%of many different technologies on a particular design.
+%While the worst-case power error in these benchmarks is relatively high ($27.8\%$), 
+%the typical error is low enough to answer what-if questions about 2D and 3DIC performance.
+%In the subsequent sections the simulator is used in this manner
+%to investigate the impacts of material, technology, and packaging innovations on the power consumption
+%and performance of 2D and 3DICs.}
+
+\rechanged{
 The value of this simulation platform lies
-in its ability to consider many different effects very rapidly (a design scenario can be evaluated in several
-seconds on a laptop computer), 
+in its ability to consider many different effects very rapidly,
+%(a design scenario can be evaluated in several
+%seconds on a laptop computer), 
 %enabling investigation of the relative performance
 %of many different technologies on a particular design.
 enabling investigation of trends in the performance and power consumption of a reference design
 over a wide range of technologies and configurations.
-Overall, this level of accuracy is sufficient for the investigation
+While the worst-case error in these benchmarks is relatively high ($27.8\%$), 
+the typical error is much lower, and this level of accuracy is sufficient for the investigation
 of power and performance trends in 2D and 3DICs.
 In the subsequent sections the simulator is used in this manner
 to investigate the impacts of material, technology, and packaging innovations on the power consumption
@@ -431,7 +446,7 @@ ILD permittivities, ranging from 3.9 (silicon dioxide), all the way down to 1 (v
 Figure \ref{f-2d-materials-num-levels-ild} shows that the number of metal layers required to fully route
 the Sandy Bridge processing core can be reduced from 8 to 6 if the relative dielectric constant
 of the ILD material can be brought below 1.3.
-CPU power consumption scales roughly linearly with
+\rechanged{Overall power consumption increases with}
 ILD permittivity, as shown in \cref{f-2d-materials-power-consumption}, and significant power reductions
 are possible with ULK materials. The power reduction comes from both a reduction in wire power,
 as well as a reduction in the number and size of the repeaters needed to meet timing constraints.
@@ -463,7 +478,7 @@ and the number of metal layers required to fully route a design \cite{adelmann_a
 It is likely that only the lowest metal levels would use alternate materials \cite{oates-electromigration-2015}. 
 
 To investigate the impact of alternate metals on routing,
-a 7nm Sandy Bridge CPU test case was constructed by scaling the gate pitch, 
+a 7nm Sandy Bridge CPU test case was constructed by scaling \rechanged{down} the gate pitch, 
 minimum wire pitch, transistor size, and all other lengths in the 32nm Sandy Bridge
 by a factor of 4.57X (32/7). Two 7nm test cases were considered: \textit{7nm A}, in which all wires are composed of an
 alternate material, and \textit{7nm B}, in which only wires thinner than 25nm are replaced by the alternate material.
@@ -537,7 +552,7 @@ TSVs are typically limited to diameters of 5-10${\mu}m$ and aspect ratios betwee
 
 The impact of die thickness on 3DIC power consumption is examined in \cref{f-sb-wire-power-thickness}.
 In order to realize the greatest possible power reduction from 3D integration, the active layers should be
-as thin as possible, to minimize the distance that signals must travel when they are routed between tiers.
+as thin as possible\rechanged{, to maximize the number of long wires that can be shortened by block folding.}
 
 \begin{figure}[tb]
 	\centering
@@ -567,7 +582,7 @@ the eight-tier implementation requires roughly an order of magnitude
 more power connections than the 2D design. The ILD permittivity has a strong impact on the power delivery requirements,
 as it directly affects the power consumption of the on-chip communication network. The thickness 
 of the 3DIC logic tiers is not a limiting factor for 2-tier designs, but 4- and 8-tier designs can realize nearly as much benefit
-from die thinning as from ULK dielectrics.
+from die thinning as from ULK dielectrics\rechanged{, due to the reduced power consumption of thin-tier 3DICs (\cref{f-sb-wire-power-thickness}).}
 
 \begin{figure}[tb]
 	\centering
@@ -598,11 +613,10 @@ varying amounts of silicon area allocated for decoupling capacitors. The power T
 alternate integration schemes in which wafers are bonded and subsequently thinned could enable the stacking of such thin layers
 without the need for modified wafer handling processes \cite{patti-three-dimensional-2006}. Alternately, monolithic 3DIC fabrication
 techniques could enable designs with extremely small intertier distances \cite{vinet-monolithic-2014}.}
-As can be seen in \cref{f-sb-psn-decap-10um}, increasing the decoupling
+\rechanged{For simplicity, the impact of electromigration on power delivery TSVs is ignored.} As can be seen in \cref{f-sb-psn-decap-10um}, increasing the decoupling
 capacitance can significantly reduce the number of power pads or TSVs, but achieving high decoupling capacitance densities could be challenging. 
-Even with the use of decoupling capacitors, a lower bound on power TSV number is set by
-the need to keep the current density carried by each TSV low enough to avoid electromigration.
-
+\rechanged{Even with the use of decoupling capacitors, a more stringent lower bound on power TSV number may be set by
+the need to keep the current density carried by each TSV low enough to avoid electromigration.}
 
 
 
@@ -615,11 +629,11 @@ While the total power dissipation of an IC is expected to decrease as the system
 the areal power density will still increase as tiers are stacked atop one another,
 leading to increased stress on the cooling system.
 In order to quantify the thermal impact of 3D stacking, the performance of a single 32nm Sandy Bridge CPU core is examined 
-\changed{in both 2D and 3D configurations, and with both air-cooled and microfluidic heat sinks. 
-In all cases the heat sinks are located on the back side of the top die
-in the stack. The air-cooled heat sink has a heat transfer coefficient of $1.83$ W/cm$^2$K and the microfluidic heat sink
-has a heat transfer coefficient of $4.63$ W/cm$^2$K \cite{zhang-micropinfin-heat-sink-2013}. Boundaries internal
-to the package are assigned a heat transfer coefficient of $0.005$ W/cm$^2$K. The
+\changed{in both 2D and 3D configurations, and with both air-cooled and \rechanged{liquid-cooled} heat sinks. 
+\rechanged{In all cases the heat sinks are located on the back side of the top die.}
+The air-cooled heat sink has a heat transfer coefficient of $1.83$ W/cm$^2$K and the fluidic heat sink
+has a heat transfer coefficient of $4.63$ W/cm$^2$K \cite{zhang-micropinfin-heat-sink-2013}.
+Boundaries internal to the package are assigned a heat transfer coefficient of $0.005$ W/cm$^2$K. The
 thermal conductivities used for the materials in the stack are presented in \cref{t-thermal-materials}.}
 
 \begin{table}[tb]
@@ -643,10 +657,10 @@ thermal conductivities used for the materials in the stack are presented in \cre
 
 \begin{figure}[tb]
 	\centering
-	\includegraphics[width=3.5in]{Figures/SB3D_max_frequency__air_vs_water_cooling.png}
+	\includegraphics[width=3.5in]{Figures/SB3D_max_frequency__air_vs_water_cooling_2.png}
 	\caption{
 		Maximum clock frequency of 2D and 3D 32nm Sandy Bridge CPU cores limited to 90$^\circ$C under air cooling (blue)
-		and microfluidic cooling (red).
+		and \rechanged{liquid} cooling (red).
 		}
 	\label{f-sb3d-freq-vs-tiers}
 \end{figure}
@@ -656,8 +670,8 @@ thermal conductivities used for the materials in the stack are presented in \cre
 The CPU core was simulated in each configuration to find 
 the maximum operating frequency which could be maintained while keeping the maximum temperature below 90$^\circ$C.
 \changed{In order to focus on the thermal aspects of 3D stacking we assumed that the system was thermally-limited, and ignored other
-factors which could limit the operating frequency of the chip, such as clock distribution. Additionally,
-the power consumed by the cooling solution is ignored, in order to isolate intrinsic die-level
+factors which could limit the operating frequency of the chip, such as clock distribution.
+The power consumed by the cooling solution is ignored, in order to isolate intrinsic die-level
 effects from the details of the heat sink.}
 
 As can be seen in \cref{f-sb3d-freq-vs-tiers}, the maximum frequency decreases steadily as the CPU is folded across
@@ -666,7 +680,9 @@ system increases the strain on the cooling system.
 \changed{In all cases, the microfluidically-cooled cores can run faster than the air-cooled cores.}
 \changed{It is important to note that the configuration considered here represents the most thermally challenging 3D integration scenario:
 the stacking of high performance logic. With a more aggressive cooling solution the logic core considered here can be folded over up
-to four tiers while still achieving performance parity with an air-cooled 2D implementation.}
+to four tiers while still achieving performance parity with an air-cooled 2D implementation.
+\rechanged{Additionally, microfluidic coolers could be integrated into each die in the stack to further
+reduce the temperature of the stack.}}
 
 
 
@@ -789,8 +805,7 @@ Early Career Faculty Honor Award, the 2012 DARPA Young Faculty Award,
 the 2011 IEEE CPMT Society Outstanding Young Engineer Award, and was
 an Invited Participant in the 2012 National Academy of Engineering Frontiers
 of Engineering Symposium. He was also a recipient of the SRC Inventor Recognition Awards in 2002, 2005, and 2009.
-He and his research group have received 12 conference and student paper
-awards.
+He and his research group have received 12 conference and student paper awards.
 %, including one from the IEEE Custom Integrated Circuits Conference,
 %five from the IEEE Electronic Components and Technology Conference, and
 %three from the IEEE International Interconnect Technology Conference.
