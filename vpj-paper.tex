@@ -40,7 +40,7 @@
 
 \usepackage{xcolor} % Use this for different colors -- useful for indicating what's changed since last review round
 \newcommand{\changed}[1]{\textcolor{red}{#1}}
-%\renewcommand{\changed}[1]{#1} %Uncomment this to get rid of the red stuff
+\renewcommand{\changed}[1]{#1} %Uncomment this to get rid of the red stuff
 
 %% correct bad hyphenation here
 \hyphenation{op-tical net-works semi-conduc-tor}
@@ -60,7 +60,7 @@
 \title{\changed{A Simulation Tool for Rapid Investigation of Trends in 3DIC Performance and Power Consumption}}
 %\title{\changed{3DVP: A Compact Tool for Investigation of Trends in 3DIC Performance and Power Consumption}}
 \author{William~Wahby,~\IEEEmembership{Student~Member,~IEEE}, Li~Zheng, Yang~Zhang,~\IEEEmembership{Student~Member,~IEEE}, and Muhannad~Bakir,~\IEEEmembership{Senior~Member,~IEEE}%
-	\thanks{Original manuscript received July 11, 2015. \changed{Revised manuscript received November ??, 2015.} This work was supported in part by the SRC GRC project 2254.001, and by the SRC Educational Alliance Intel Foundation Fellowship}%
+	\thanks{Original manuscript received July 11, 2015. \changed{Revised manuscript received November 19, 2015.} This work was supported in part by the SRC GRC project 2254.001, and by the SRC Educational Alliance Intel Foundation Fellowship}%
 \thanks{William Wahby, Li Zheng, Yang Zhang, and Muhannad Bakir are with the School of Electrical and Computer Engineering, Georgia Institute of Technology, Atlanta, GA, 30332 USA. (emails: wwahby3@gatech.edu; lizheng@gatech.edu; steven.zhang@gatech.edu; muhannad.bakir@mirc.gatech.edu)}}
 
 
@@ -76,7 +76,7 @@
 %% =================================
 \begin{abstract}
 In order to compare the costs and benefits of 2D and 3DIC technologies, a compact simulation tool for 3DIC system evaluation and
-design space exploration is developed. The simulator is implemented in MATLAB, and is composed of several
+design space exploration is presented. The simulator is implemented in MATLAB, and is composed of several
 modules, including a compact 3DIC wire length distribution,
 a wire pitch and repeater insertion module, a 2D and 3DIC power supply noise
 estimation module, and a finite difference thermal simulator.
@@ -403,10 +403,16 @@ separate dice in the Core i7 680 is likely much larger than the power requiremen
 integrated on the same die.}
 
 
-\changed{While the worst-case error in these benchmarks is relatively high ($27.8\%$), the value of this simulation framework lies
+\changed{While the worst-case error in these benchmarks is relatively high ($27.8\%$), 
+the typical error is much lower.
+The value of this simulation platform lies
 in its ability to consider many different effects very rapidly (a design scenario can be evaluated in several
-seconds on a laptop computer), enabling investigation of the relative performance
-of different technologies on a particular design. Overall, this level of accuracy is sufficient for the investigation
+seconds on a laptop computer), 
+%enabling investigation of the relative performance
+%of many different technologies on a particular design.
+enabling investigation of trends in the performance and power consumption of a reference design
+over a wide range of technologies and configurations.
+Overall, this level of accuracy is sufficient for the investigation
 of power and performance trends in 2D and 3DICs.
 In the subsequent sections the simulator is used in this manner
 to investigate the impacts of material, technology, and packaging innovations on the power consumption
