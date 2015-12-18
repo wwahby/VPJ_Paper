@@ -43,6 +43,8 @@
 \renewcommand{\changed}[1]{#1} %Uncomment this to get rid of the red stuff
 \newcommand{\rechanged}[1]{\textcolor{red}{#1}}
 \renewcommand{\rechanged}[1]{#1} %Uncomment this to get rid of the red stuff
+\newcommand{\rerechanged}[1]{\textcolor{red}{#1}}
+%\renewcommand{\rerechanged}[1]{#1} %Uncomment this to get rid of the red stuff
 
 %% correct bad hyphenation here
 \hyphenation{op-tical net-works semi-conduc-tor}
@@ -62,9 +64,10 @@
 \title{\changed{A Simulation Tool for Rapid Investigation of Trends in 3DIC Performance and Power Consumption}}
 %\title{\changed{3DVP: A Compact Tool for Investigation of Trends in 3DIC Performance and Power Consumption}}
 \author{William~Wahby,~\IEEEmembership{Student~Member,~IEEE}, Li~Zheng, Yang~Zhang,~\IEEEmembership{Student~Member,~IEEE}, and Muhannad~Bakir,~\IEEEmembership{Senior~Member,~IEEE}%
-	\thanks{Original manuscript received July 11, 2015. \changed{Revised manuscript received November 19, 2015.} This work was supported in part by the SRC GRC project 2254.001, and by the SRC Educational Alliance Intel Foundation Fellowship}%
-\thanks{William Wahby, Li Zheng, Yang Zhang, and Muhannad Bakir are with the School of Electrical and Computer Engineering, Georgia Institute of Technology, Atlanta, GA, 30332 USA. (emails: wwahby3@gatech.edu; lizheng@gatech.edu; steven.zhang@gatech.edu; muhannad.bakir@mirc.gatech.edu)}}
-
+	\thanks{\rerechanged{Manuscript received July 11, 2015; \changed{revised November 19, 2015; accepted November 21, 2015. Date of publication January ??, 2016; date of current version January ??, 2016. Recommended for publication by Associate Editor E.-P. Li upon evaluation of reviewers’ comments.}}}%
+	\thanks{This work was supported in part by the SRC GRC project 2254.001, and by the SRC Educational Alliance Intel Foundation Fellowship. The authors are with the School of Electrical and Computer Engineering, Georgia Institute of Technology, Atlanta, GA, 30332 USA. (emails: wwahby3@gatech.edu; lizheng@gatech.edu; steven.zhang@gatech.edu; muhannad.bakir@mirc.gatech.edu)}%
+	\thanks{\rerechanged{Color versions of one or more of the figures in this paper are available online at http://ieeexplore.ieee.org.}}%
+	\thanks{\rerechanged{Digital Object Identifier ???}} }%
 
 
 
@@ -150,11 +153,12 @@ into the details of 3DIC physical design.}
 
 \changed{The organization of this paper is as follows: 
 in \cref{s-virtual-platform} the details of the models used and their interactions are presented;
-in \cref{s-validation} the simulation framework is benchmarked against published
-wire pitch and TDP data for several commercial processors;
-in \cref{s-2d-investigations,s-3d-investigations} the simulation tool is used to investigate the impacts of advanced
-technologies on a 32nm Sandy Bridge i7 processing core.}
-Specifically, the impacts of the interlayer dielectric, wire material, and 3D stacks on the power consumption,
+in \cref{s-validation} the simulator is benchmarked against
+wire pitch and TDP data from several commercial processors;
+in \cref{s-2d-investigations,s-3d-investigations} the simulator
+is used to investigate the impacts of advanced
+technologies on a 32nm CPU core.}
+Specifically, the impacts of the interlayer dielectric, wire material, and 3D stacking on the power consumption,
 power supply noise, and metal layers required for routing are investigated.
 
 \section{Simulation Framework} \label{s-virtual-platform}
@@ -198,11 +202,12 @@ a heterogeneous system.}
 
 
 
-\changed{Once the on-chip interconnect parameters are known, the on-chip interconnect power consumption can be estimated.
+\changed{Once the parameters of the on-chip interconnects are known, their power consumption can be estimated
+%on-chip interconnect parameters are known, the on-chip interconnect power consumption can be estimated.
 The transistor dynamic and leakage power is also calculated to determine the overall power requirements for the design.
 The total power consumption is used in conjunction with the TSV and package pin resistance and inductance
 to estimate the simultaneous switching noise in the power delivery network. Additional \rechanged{power pads and TSVs}
-are inserted until the simultaneous switching noise drops to acceptable levels.
+are inserted until the noise drops to acceptable levels.
 At this point the tool checks that the total TSV area does not exceed a user-specified limit; 
 if TSV demand outstrips available area, the TSV diameter is reduced and the interconnect and power modules are rerun.}
 
@@ -250,7 +255,7 @@ Stochastic wire length models have been shown to be effective tools for the rapi
 of interconnect properties in 2DICs
 \cite{davis_stochastic_1998,sekar_intsim_2007}.
 and 3DICs
-\cite{joyner_three-dimensional_2000},
+\cite{joyner_impact_2001},
 but the impact of TSV-induced gate-blockage in 3DICs was not considered until \cite{kim_through-silicon-via_2009-1}
 introduced a correction to account for finite TSV size. The method of \cite{kim_through-silicon-via_2009-1}
 requires brute-force calculation, however, which is too computationally intensive for rapid simulation. 
@@ -523,9 +528,9 @@ The core is assumed to be partitioned into $N$ equal pieces, which are then stac
 
 Significant power savings can be obtained by moving to a 3D design, as shown in \cref{f-sb-power-vs-tiers-ild},
 though the power reduction comes at the cost of increased areal power density, ultimately placing more
-stress on the cooling solution. The design implications of the increased power density of 3DICs will be discussed further
-in \cref{s-3D-thermal}. It is important to note that 3DICs reduce the power required by on-chip communication, fundamentally 
-improving the overall
+stress on the heat sink. The design implications of the increased power density of 3DICs will be discussed further
+in \cref{s-3D-thermal}. It is important to note that 3DICs reduce the on-chip communication power, fundamentally 
+improving the 
 energy efficiency of the system, as can be seen in \cref{f-sb-comm-power-fraction}.
 
 \begin{figure}[tb]
@@ -544,14 +549,14 @@ energy efficiency of the system, as can be seen in \cref{f-sb-comm-power-fractio
 
 
 In order to fully route a 3DIC, space must be allocated on each tier for TSVs. Since TSVs consume space
-that could otherwise be used for logic, it is desirable to minimize the fraction of chip area 
+that could be used for logic, it is desirable to minimize the fraction of chip area 
 consumed by TSVs. TSV diameter can be reduced by either increasing the TSV aspect ratio or by die thinning.
 Thicker logic tiers are attractive due to their higher mechanical stability, but they reduce the wire length advantages of 3DICs. 
 TSVs are typically limited to diameters of 5-10${\mu}m$ and aspect ratios between 5-20:1 
 \cite{lau_evolution_2011,zhang_within-tier_2013}.
-
+%
 The impact of die thickness on 3DIC power consumption is examined in \cref{f-sb-wire-power-thickness}.
-In order to realize the greatest possible power reduction from 3D integration, the active layers should be
+In order to realize the greatest power reduction from 3D integration, the active layers should be
 as thin as possible\rechanged{, to maximize the number of long wires that can be shortened by block folding.}
 
 \begin{figure}[tb]
@@ -668,7 +673,7 @@ thermal conductivities used for the materials in the stack are presented in \cre
 
 
 The CPU core was simulated in each configuration to find 
-the maximum operating frequency which could be maintained while keeping the maximum temperature below 90$^\circ$C.
+the maximum operating frequency which could be maintained while keeping the stack below 90$^\circ$C.
 \changed{In order to focus on the thermal aspects of 3D stacking we assumed that the system was thermally-limited, and ignored other
 factors which could limit the operating frequency of the chip, such as clock distribution.
 The power consumed by the cooling solution is ignored, in order to isolate intrinsic die-level
@@ -679,10 +684,15 @@ more tiers, as the increased power density (\cref{f-sb-power-vs-tiers-ild}) of t
 system increases the strain on the cooling system.
 \changed{In all cases, the microfluidically-cooled cores can run faster than the air-cooled cores.}
 \changed{It is important to note that the configuration considered here represents the most thermally challenging 3D integration scenario:
-the stacking of high performance logic. With a more aggressive cooling solution the logic core considered here can be folded over up
+the stacking of high performance logic. 
+\rerechanged{Systems which are not thermally-limited will be able to take greater advantage of 3D integration to increase performance and
+decrease power consumption.}
+With a more aggressive cooling solution the \rerechanged{thermally-limited} logic core considered here can be folded over up
 to four tiers while still achieving performance parity with an air-cooled 2D implementation.
 \rechanged{Additionally, microfluidic coolers could be integrated into each die in the stack to further
 reduce the temperature of the stack.}}
+%\rerechanged{It is important to note that systems systems which are not thermally-limited will be able to take even greater advantage of 3D integration
+%to increase performance and decrease power consumption.}
 
 
 
@@ -701,13 +711,14 @@ and was validated against wire pitch and power consumption data for recent comme
 %was simulated to determine the impact of alternate wire materials on the number of metal levels required for routing
 %at advanced process nodes.
 \changed{
-The simulation results suggest that high performance 3DICs will require large numbers of power delivery TSVs,
-due to the parasitic TSV resistance and inductance introduced into the power delivery network, as well as the
+The simulation results suggest that high performance 3DICs may require large numbers of power delivery TSVs,
+due to the TSV parasitics introduced into the power delivery network, as well as the
 increased power density of the 3D cores. Die thinning and low-k dielectrics are expected to
 be effective tools for reducing the power consumption and power TSV requirements of high performance 3DICs.
 The results suggest that 3DICs should exhibit greater energy efficiency
-than their 2D counterparts, though high performance 3D logic cores will require more aggressive cooling solutions to achieve
-performance parity. }
+than their 2D counterparts, though \rerechanged{thermally-limited} 3D designs may require more aggressive cooling solutions.}
+%to achieve
+%performance parity. }
 
 
 
@@ -721,7 +732,7 @@ as well as the SRC Educational Alliance Intel Foundation Fellowship.
 
 
 %% Include bibliography
-\bibliographystyle{IEEEtran_local}
+\bibliographystyle{IEEEtran}%_local}
 
 % Use this to manually decrease the effective page size to balance the bibliography columns.
 %May not work in all IEEE modes.
@@ -786,17 +797,17 @@ GA, USA.
 \begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{Figures/bio-muhannad-2b.png}}]%
 {Muhannad S. Bakir}
 Muhannad S. Bakir (SM'12) received the B.E.E. degree from Auburn University, Auburn, AL, in 1999 and the M.S. 
-and Ph.D. degrees in electrical and computer engineering from the Georgia Institute of Technology (Georgia Tech) 
+and Ph.D. degrees in electrical and computer engineering from the Georgia Institute of Technology
 in 2000 and 2003, respectively. 
 He is currently an Associate Professor in the School of Electrical and Computer Engineering at Georgia Tech. 
-His areas of interest include three-dimensional (3D) electronic system integration, advanced cooling and power 
+His areas of interest include 3D electronic system integration, advanced cooling and power 
 delivery for 3D systems, biosensors and their integration with CMOS circuitry, and nanofabrication technology. 
 Dr. Bakir is the recipient of the 2013 Intel Early Career Faculty Honor Award, 2012 DARPA Young Faculty Award, 
 2011 IEEE CPMT Society Outstanding Young Engineer Award, and was an Invited Participant in the 2012 National 
 Academy of Engineering Frontiers of Engineering Symposium. In 2015, Dr. Bakir was elected by the IEEE CPMT 
 Society to serve as a Distinguished Lecturer and was an invited speaker at the US National Academies Frontiers 
 of Sensor Science Symposium. Dr. Bakir and his research group have received more than fifteen conference and 
-student paper awards
+student paper awards.
 %including five from the IEEE Electronic Components and Technology Conference (ECTC), four 
 %from the IEEE International Interconnect Technology Conference (IITC), and one from the IEEE Custom Integrated 
 %Circuits Conference (CICC). 
