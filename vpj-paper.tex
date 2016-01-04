@@ -38,13 +38,14 @@
 
 \usepackage{threeparttable} % More control over tables
 
+% Red highlighting for changes at each stage of review
 \usepackage{xcolor} % Use this for different colors -- useful for indicating what's changed since last review round
 \newcommand{\changed}[1]{\textcolor{red}{#1}}
-\renewcommand{\changed}[1]{#1} %Uncomment this to get rid of the red stuff
 \newcommand{\rechanged}[1]{\textcolor{red}{#1}}
-\renewcommand{\rechanged}[1]{#1} %Uncomment this to get rid of the red stuff
 \newcommand{\rerechanged}[1]{\textcolor{red}{#1}}
-%\renewcommand{\rerechanged}[1]{#1} %Uncomment this to get rid of the red stuff
+\renewcommand{\rechanged}[1]{#1} %Uncomment this to get rid of the red stuff
+\renewcommand{\changed}[1]{#1} %Uncomment this to get rid of the red stuff
+\renewcommand{\rerechanged}[1]{#1} %Uncomment this to get rid of the red stuff
 
 %% correct bad hyphenation here
 \hyphenation{op-tical net-works semi-conduc-tor}
@@ -64,8 +65,8 @@
 \title{\changed{A Simulation Tool for Rapid Investigation of Trends in 3DIC Performance and Power Consumption}}
 %\title{\changed{3DVP: A Compact Tool for Investigation of Trends in 3DIC Performance and Power Consumption}}
 \author{William~Wahby,~\IEEEmembership{Student~Member,~IEEE}, Li~Zheng, Yang~Zhang,~\IEEEmembership{Student~Member,~IEEE}, and Muhannad~Bakir,~\IEEEmembership{Senior~Member,~IEEE}%
-	\thanks{\rerechanged{Manuscript received July 11, 2015; \changed{revised November 19, 2015; accepted November 21, 2015. Date of publication January ??, 2016; date of current version January ??, 2016. Recommended for publication by Associate Editor E.-P. Li upon evaluation of reviewers’ comments.}}}%
-	\thanks{This work was supported in part by the SRC GRC project 2254.001, and by the SRC Educational Alliance Intel Foundation Fellowship. The authors are with the School of Electrical and Computer Engineering, Georgia Institute of Technology, Atlanta, GA, 30332 USA. (emails: wwahby3@gatech.edu; lizheng@gatech.edu; steven.zhang@gatech.edu; muhannad.bakir@mirc.gatech.edu)}%
+	\thanks{\rerechanged{Manuscript received July 11, 2015; \changed{revised November 19, 2015; accepted November 21, 2015. Date of publication January ??, 2016; date of current version January ??, 2016. Recommended for publication by Associate Editor E.-P. Li upon evaluation of reviewers' comments.}}}%
+	\thanks{This work was supported by the SRC GRC project 2254.001, and by the SRC Educational Alliance Intel Foundation Fellowship. The authors are with the School of Electrical and Computer Engineering, Georgia Institute of Technology, Atlanta, GA, 30332 USA. (emails: wwahby3@gatech.edu; lizheng@gatech.edu; steven.zhang@gatech.edu; muhannad.bakir@mirc.gatech.edu)}%
 	\thanks{\rerechanged{Color versions of one or more of the figures in this paper are available online at http://ieeexplore.ieee.org.}}%
 	\thanks{\rerechanged{Digital Object Identifier ???}} }%
 
@@ -90,8 +91,7 @@ In order to quantify the benefits of both 2D and 3D integration approaches, a 32
 technology parameters, including interlayer dielectric (ILD) material, on-chip wire material, die thickness, 
 and cooling solution are explored. The results suggest that 3D integration may provide a significant power reduction for the 32nm test case,
 but more aggressive cooling solutions must be employed to maintain the same clock frequency due to the increased
-areal power density of the 3D CPU. \changed{The simulation tool is available online at 
-www.ece.gatech.edu/research/labs/i3ds.}
+areal power density of the 3D CPU.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -104,7 +104,7 @@ Three-dimensional integrated circuits, integrated circuit modeling, integrated c
 \section{Introduction}
 \IEEEPARstart{E}{conomic} and physical challenges to transistor scaling are driving interest in 3D integration,
 but uncertainty regarding the fabrication costs and system-level tradeoffs of 3D integration
-complicate 3DIC design. Projections of 3DIC cost and performance are further impacted by the strongly-coupled
+complicate the design of three-dimensional integrated circuits (3DICs). Projections of 3DIC cost and performance are further impacted by the strongly-coupled
 nature of communication, power delivery, and thermal management in 3DICs. The 3DIC
 design space is complex, as 3DIC design encompasses a broad spectrum of possible design choices and integration
 methodologies, ranging from 2.5D interposer-based integration all the way to finely-grained monolithic 
@@ -633,7 +633,7 @@ While the total power dissipation of an IC is expected to decrease as the system
 (as shown in \cref{f-sb-power-vs-tiers-ild}),
 the areal power density will still increase as tiers are stacked atop one another,
 leading to increased stress on the cooling system.
-In order to quantify the thermal impact of 3D stacking, the performance of a single 32nm Sandy Bridge CPU core is examined 
+In order \rerechanged{to demonstrate the thermal capabilities of the simulation tool, and} to quantify the thermal impact of 3D stacking, the performance of a single 32nm Sandy Bridge CPU core is examined 
 \changed{in both 2D and 3D configurations, and with both air-cooled and \rechanged{liquid-cooled} heat sinks. 
 \rechanged{In all cases the heat sinks are located on the back side of the top die.}
 The air-cooled heat sink has a heat transfer coefficient of $1.83$ W/cm$^2$K and the fluidic heat sink
@@ -674,7 +674,7 @@ thermal conductivities used for the materials in the stack are presented in \cre
 
 The CPU core was simulated in each configuration to find 
 the maximum operating frequency which could be maintained while keeping the stack below 90$^\circ$C.
-\changed{In order to focus on the thermal aspects of 3D stacking we assumed that the system was thermally-limited, and ignored other
+\changed{In order to focus solely on the thermal aspects of 3D stacking we assumed that the system was thermally-limited, and ignored other
 factors which could limit the operating frequency of the chip, such as clock distribution.
 The power consumed by the cooling solution is ignored, in order to isolate intrinsic die-level
 effects from the details of the heat sink.}
@@ -683,16 +683,15 @@ As can be seen in \cref{f-sb3d-freq-vs-tiers}, the maximum frequency decreases s
 more tiers, as the increased power density (\cref{f-sb-power-vs-tiers-ild}) of the
 system increases the strain on the cooling system.
 \changed{In all cases, the microfluidically-cooled cores can run faster than the air-cooled cores.}
-\changed{It is important to note that the configuration considered here represents the most thermally challenging 3D integration scenario:
+With a more aggressive cooling solution the \rerechanged{thermally-limited} logic core considered here can be folded over up
+to four tiers while still achieving performance parity with an air-cooled 2D implementation.
+\rerechanged{It is important to note that the configuration considered here represents the most thermally challenging 3D integration scenario:
 the stacking of high performance logic. 
 \rerechanged{Systems which are not thermally-limited will be able to take greater advantage of 3D integration to increase performance and
 decrease power consumption.}
-With a more aggressive cooling solution the \rerechanged{thermally-limited} logic core considered here can be folded over up
-to four tiers while still achieving performance parity with an air-cooled 2D implementation.
-\rechanged{Additionally, microfluidic coolers could be integrated into each die in the stack to further
-reduce the temperature of the stack.}}
-%\rerechanged{It is important to note that systems systems which are not thermally-limited will be able to take even greater advantage of 3D integration
-%to increase performance and decrease power consumption.}
+\rechanged{Additionally, the performance of thermally-limited 3D stacks could be further improved by
+integrating microfluidic coolers into each die in the stack to
+thermally decouple each tier, allowing each cooler to efficiently extract heat dissipated in adjacent tiers.}}
 
 
 
@@ -703,13 +702,14 @@ reduce the temperature of the stack.}}
 
 \section{Conclusions}
 A compact simulation tool for 2D and 3D IC pathfinding was developed and used to examine the impacts of 
-advanced technologies on system performance. The tool incorporates 
-models for signal delivery, power supply noise, and thermal performance in 2D and 3D ICs,
+advanced technologies on system performance.
+The tool incorporates models for signal delivery, power supply noise, and thermal performance in 2D and 3D ICs,
 and was validated against wire pitch and power consumption data for recent commercial microprocessors.
 %The impacts of low-k dielectrics, and 3D integration on the performance, power consumption,
 %and power delivery requirements of a 32nm processing core were examined, and a 7nm version of the same processor
 %was simulated to determine the impact of alternate wire materials on the number of metal levels required for routing
 %at advanced process nodes.
+\rerechanged{The simulation tool is available upon request.}
 \changed{
 The simulation results suggest that high performance 3DICs may require large numbers of power delivery TSVs,
 due to the TSV parasitics introduced into the power delivery network, as well as the
@@ -748,7 +748,7 @@ as well as the SRC Educational Alliance Intel Foundation Fellowship.
 
 \begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{Figures/bio-will.png}}]%
 {William Wahby}
-(S13) received the B.S. and M.S. degrees in electrical and computer engineering from the
+(S'13) received the B.S. and M.S. degrees in electrical and computer engineering from the
 University of Illinois at Urbana Champaign in 2007 and 2009, respectively. He worked
 as a Product Engineer at Intel until 2011, when he
 joined the Ph.D. program in electrical
@@ -783,7 +783,7 @@ and chip-to-chip signaling modeling for high performance
 
 \begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{Figures/bio-yang.png}}]%
 {Yang Zhang}
-(S’13) received the B.S. degree
+(S'13) received the B.S. degree
 in microelectronics and mathematics from Peking
 University, Beijing, China, in 2012. He is currently
 pursuing the Ph.D. degree in electrical engineering
